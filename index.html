@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="GCC Salary and Relocation Planner by Tauqeer Ahmed. Estimate Saudi Arabia, UAE, and Qatar salary conversion, monthly expenses, savings, and relocation readiness.">
+  <meta name="author" content="Tauqeer Ahmed">
+  <meta name="keywords" content="GCC salary calculator, Riyadh salary planner, UAE salary planner, Qatar salary planner, INR to SAR, INR to AED, INR to QAR, Tauqeer Ahmed, taukhir">
+  <meta property="og:title" content="GCC Salary & Relocation Planner | Tauqeer Ahmed">
+  <meta property="og:description" content="A static relocation calculator for INR to SAR/AED/QAR salary planning, monthly expense modeling, and savings projection.">
+  <meta property="og:type" content="website">
+  <title>GCC Salary & Relocation Planner | Tauqeer Ahmed</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="./">GCC Planner</a>
+      <div>
+        <a href="#calculator">Calculator</a>
+        <a href="#assumptions">Assumptions</a>
+        <a href="https://taukhir.github.io/portfolio/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      </div>
+    </nav>
+
+    <section class="hero-grid">
+      <div>
+        <p class="eyebrow">Built by Tauqeer Ahmed · taukhir</p>
+        <h1>Salary and relocation clarity for Gulf opportunities.</h1>
+        <p class="hero-copy">
+          Estimate monthly savings, INR conversion, cost assumptions, and relocation fit
+          for Saudi Arabia, UAE, and Qatar job discussions.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="#calculator">Plan relocation</a>
+          <a class="button" href="https://github.com/taukhir" target="_blank" rel="noopener noreferrer">View GitHub</a>
+        </div>
+      </div>
+
+      <aside class="signal-card" aria-label="Planner highlights">
+        <span>scenario.model</span>
+        <strong>Riyadh · UAE · Qatar</strong>
+        <div class="signal-grid">
+          <p><b>3</b><small>GCC markets</small></p>
+          <p><b>INR</b><small>home conversion</small></p>
+          <p><b>Static</b><small>GitHub Pages ready</small></p>
+        </div>
+      </aside>
+    </section>
+  </header>
+
+  <main>
+    <section class="section calculator" id="calculator">
+      <div class="section-heading">
+        <p class="eyebrow">Interactive calculator</p>
+        <h2>Compare salary, expenses, and expected savings.</h2>
+        <p>
+          Default values are editable. Exchange rates and living costs are simple planning
+          assumptions, not financial advice.
+        </p>
+      </div>
+
+      <div class="planner">
+        <form class="inputs" aria-label="Relocation salary inputs">
+          <label>
+            Destination
+            <select id="country">
+              <option value="saudi">Saudi Arabia · SAR</option>
+              <option value="uae">United Arab Emirates · AED</option>
+              <option value="qatar">Qatar · QAR</option>
+            </select>
+          </label>
+
+          <label>
+            Expected monthly salary
+            <input id="salary" type="number" min="0" step="500" value="22000">
+          </label>
+
+          <label>
+            Housing
+            <input id="housing" type="number" min="0" step="250">
+          </label>
+
+          <label>
+            Food and groceries
+            <input id="food" type="number" min="0" step="100">
+          </label>
+
+          <label>
+            Transport
+            <input id="transport" type="number" min="0" step="100">
+          </label>
+
+          <label>
+            Family / dependents
+            <input id="family" type="number" min="0" step="100">
+          </label>
+
+          <label>
+            Other expenses
+            <input id="other" type="number" min="0" step="100">
+          </label>
+
+          <label>
+            Current salary in India, LPA
+            <input id="indiaSalary" type="number" min="0" step="1" value="35">
+          </label>
+        </form>
+
+        <section class="results" aria-live="polite">
+          <div class="result-main">
+            <span>Estimated monthly savings</span>
+            <strong id="monthlySavings">-</strong>
+            <p id="savingsTone">Adjust values to calculate your relocation scenario.</p>
+          </div>
+
+          <div class="result-grid">
+            <article>
+              <span>Total monthly expenses</span>
+              <strong id="monthlyExpenses">-</strong>
+            </article>
+            <article>
+              <span>Annual savings in INR</span>
+              <strong id="annualSavingsInr">-</strong>
+            </article>
+            <article>
+              <span>Equivalent annual package</span>
+              <strong id="annualPackageInr">-</strong>
+            </article>
+            <article>
+              <span>Current India monthly gross</span>
+              <strong id="indiaMonthly">-</strong>
+            </article>
+          </div>
+
+          <div class="bar-card">
+            <div class="bar-label">
+              <span>Salary usage</span>
+              <strong id="usagePercent">-</strong>
+            </div>
+            <div class="bar" aria-hidden="true"><span id="expenseBar"></span></div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="section insight-grid" id="assumptions">
+      <article>
+        <span>01</span>
+        <h3>Planning assumption</h3>
+        <p>Rates are configurable in code and meant for quick offer conversations before detailed financial planning.</p>
+      </article>
+      <article>
+        <span>02</span>
+        <h3>Relocation view</h3>
+        <p>The calculator separates housing, food, transport, family, and other costs so trade-offs stay visible.</p>
+      </article>
+      <article>
+        <span>03</span>
+        <h3>Portfolio proof</h3>
+        <p>This project is intentionally static, responsive, and deployable through GitHub Pages.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Built by <strong>Tauqeer Ahmed</strong> for GCC salary planning and relocation conversations.</p>
+    <div>
+      <a href="https://taukhir.github.io/portfolio/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+      <a href="https://github.com/taukhir" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://www.linkedin.com/in/tauqeer-ahmed" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
