@@ -31,7 +31,7 @@ a {
 }
 
 .hero {
-  min-height: 100vh;
+  min-height: clamp(720px, 100vh, 900px);
   padding: 28px clamp(20px, 4vw, 64px) 70px;
   color: var(--white);
   background:
@@ -144,9 +144,11 @@ h1 {
 }
 
 .signal-card > span,
-.result-main span,
+.decision-card span,
 .result-grid span,
+.comparison-card span,
 .bar-label span,
+.country-note span,
 .insight-grid span {
   display: block;
   color: var(--accent-2);
@@ -265,13 +267,44 @@ select:focus {
   border-color: var(--accent);
 }
 
+.benefits {
+  display: grid;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  gap: 12px;
+}
+
+.benefits legend {
+  padding: 0 8px;
+  color: #384453;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.benefits label {
+  display: flex;
+  align-items: center;
+  color: #4d5967;
+  font-size: 12px;
+  gap: 9px;
+  text-transform: none;
+}
+
+.benefits input {
+  width: 16px;
+  min-height: 16px;
+  accent-color: var(--accent);
+}
+
 .results {
   padding: 28px;
   color: var(--white);
   background: var(--ink);
 }
 
-.result-main {
+.decision-card {
   min-height: 220px;
   padding: 28px;
   border: 1px solid var(--line-dark);
@@ -280,7 +313,7 @@ select:focus {
     var(--ink-soft);
 }
 
-.result-main strong {
+.decision-card strong {
   display: block;
   margin-top: 22px;
   font-size: clamp(46px, 6vw, 82px);
@@ -288,12 +321,30 @@ select:focus {
   line-height: 0.95;
 }
 
-.result-main p {
+.decision-card p {
   max-width: 520px;
   margin: 18px 0 0;
   color: #aeb9c5;
   font-size: 16px;
   line-height: 1.55;
+}
+
+.decision-card.accept {
+  background:
+    linear-gradient(135deg, rgba(113, 229, 173, 0.14), transparent 60%),
+    var(--ink-soft);
+}
+
+.decision-card.negotiate {
+  background:
+    linear-gradient(135deg, rgba(255, 107, 53, 0.14), transparent 60%),
+    var(--ink-soft);
+}
+
+.decision-card.risk {
+  background:
+    linear-gradient(135deg, rgba(255, 77, 109, 0.16), transparent 60%),
+    var(--ink-soft);
 }
 
 .result-grid {
@@ -315,6 +366,29 @@ select:focus {
   display: block;
   margin-top: 24px;
   font-size: 26px;
+  letter-spacing: -0.04em;
+}
+
+.comparison-card {
+  display: grid;
+  margin-top: 18px;
+  border-top: 1px solid var(--line-dark);
+  border-left: 1px solid var(--line-dark);
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.comparison-card > div {
+  min-height: 118px;
+  padding: 18px;
+  border-right: 1px solid var(--line-dark);
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.comparison-card strong {
+  display: block;
+  margin-top: 20px;
+  color: var(--white);
+  font-size: 22px;
   letter-spacing: -0.04em;
 }
 
@@ -349,6 +423,20 @@ select:focus {
   transition: width 220ms ease;
 }
 
+.country-note {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid rgba(113, 229, 173, 0.18);
+  background: rgba(113, 229, 173, 0.07);
+}
+
+.country-note p {
+  margin: 10px 0 0;
+  color: #bac5d0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
 .rate-status {
   margin: 16px 0 0;
   color: #9aa6b3;
@@ -360,7 +448,7 @@ select:focus {
 .insight-grid {
   display: grid;
   padding-top: 20px;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 18px;
 }
 
@@ -422,7 +510,9 @@ select:focus {
   }
 
   .signal-grid,
-  .result-grid {
+  .result-grid,
+  .comparison-card,
+  .insight-grid {
     grid-template-columns: 1fr;
   }
 

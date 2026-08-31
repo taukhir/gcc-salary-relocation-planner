@@ -9,9 +9,15 @@ Built by **Tauqeer Ahmed | taukhir** as a portfolio project.
 This project supports relocation discussions for GCC roles by turning salary expectations into a clear monthly planning view:
 
 - destination market: Saudi Arabia, UAE, Qatar, Kuwait, Oman, Bahrain
+- family profile presets: single, couple, family with 1 child, family with 2 children
 - expected salary as monthly or annual
 - housing, food, transport, family, and other costs
+- employer benefits: housing, medical insurance, flights, transport, schooling
 - monthly savings
+- monthly savings rate
+- current salary vs GCC offer comparison
+- decision summary: strong, negotiate, review, or high-risk
+- country-specific negotiation notes
 - annual savings in the selected current-country currency
 - equivalent annual package in the selected current-country currency
 - current salary country and monthly/annual period
@@ -50,7 +56,9 @@ https://taukhir.github.io/gcc-salary-relocation-planner/
 
 ## Notes
 
-Exchange rates are fetched from a public JSON exchange-rate API when available. Built-in fallback rates keep the app usable when the API is unavailable. Expenses are planning assumptions and should be reviewed before using the calculator for a final compensation decision.
+Exchange rates are fetched from a public JSON exchange-rate API when available. Built-in fallback rates keep the app usable when the API is unavailable.
+
+This planner is guidance only, not financial advice. Verify latest exchange rates, taxes, visa rules, schooling, rent, insurance, contract type, and employer benefits before making a relocation decision.
 
 ## Author Links
 

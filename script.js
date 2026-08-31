@@ -71,6 +71,46 @@ const marketDefaults = {
   }
 };
 
+const familyMultipliers = {
+  single: {
+    label: "Single",
+    housing: 1,
+    food: 1,
+    transport: 1,
+    family: 0
+  },
+  couple: {
+    label: "Couple",
+    housing: 1.2,
+    food: 1.55,
+    transport: 1.25,
+    family: 0.35
+  },
+  family1: {
+    label: "Family with 1 child",
+    housing: 1.45,
+    food: 1.9,
+    transport: 1.45,
+    family: 1
+  },
+  family2: {
+    label: "Family with 2 children",
+    housing: 1.65,
+    food: 2.25,
+    transport: 1.6,
+    family: 1.55
+  }
+};
+
+const countryNotes = {
+  SAR: "Saudi Arabia: check housing allowance, family visa costs, transport, medical coverage, and whether the offer is base-only or includes benefits.",
+  AED: "UAE: rent can dominate the budget. Compare Dubai, Abu Dhabi, and Sharjah assumptions and confirm medical insurance and schooling support.",
+  QAR: "Qatar: packages vary by housing and family benefits. Confirm accommodation, transport, schooling, and annual travel support.",
+  KWD: "Kuwait: salary can look strong after conversion, but confirm dependent visa rules, housing quality, schooling, and insurance coverage.",
+  OMR: "Oman: review rent, schooling, healthcare, and long-term savings because packages can be more stable but less inflated than larger markets.",
+  BHD: "Bahrain: compare housing and commute costs carefully and verify medical coverage, family benefits, and contract type."
+};
+
 const fallbackRatesInInr = {
   INR: 1,
   SAR: 22.2,
@@ -86,6 +126,7 @@ let liveRatesLoaded = false;
 
 const fields = {
   country: document.querySelector("#country"),
+  familyProfile: document.querySelector("#familyProfile"),
   salaryPeriod: document.querySelector("#salaryPeriod"),
   salary: document.querySelector("#salary"),
   housing: document.querySelector("#housing"),
@@ -93,6 +134,11 @@ const fields = {
   transport: document.querySelector("#transport"),
   family: document.querySelector("#family"),
   other: document.querySelector("#other"),
+  housingProvided: document.querySelector("#housingProvided"),
+  medicalProvided: document.querySelector("#medicalProvided"),
+  flightsProvided: document.querySelector("#flightsProvided"),
+  transportProvided: document.querySelector("#transportProvided"),
+  schoolingProvided: document.querySelector("#schoolingProvided"),
   currentCountry: document.querySelector("#currentCountry"),
   currentSalaryPeriod: document.querySelector("#currentSalaryPeriod"),
   currentSalary: document.querySelector("#currentSalary")
@@ -106,7 +152,15 @@ const output = {
   annualPackage: document.querySelector("#annualPackage"),
   annualPackageLabel: document.querySelector("#annualPackageLabel"),
   currentMonthly: document.querySelector("#currentMonthly"),
-  savingsTone: document.querySelector("#savingsTone"),
+  salaryUplift: document.querySelector("#salaryUplift"),
+  savingsRate: document.querySelector("#savingsRate"),
+  compareCurrent: document.querySelector("#compareCurrent"),
+  compareOffer: document.querySelector("#compareOffer"),
+  decisionCard: document.querySelector("#decisionCard"),
+  decisionLabel: document.querySelector("#decisionLabel"),
+  decisionReason: document.querySelector("#decisionReason"),
+  countryNoteTitle: document.querySelector("#countryNoteTitle"),
+  countryNote: document.querySelector("#countryNote"),
   usagePercent: document.querySelector("#usagePercent"),
   expenseBar: document.querySelector("#expenseBar"),
   rateStatus: document.querySelector("#rateStatus")
@@ -139,10 +193,16 @@ function applyMarketDefaults() {
   const selected = marketDefaults[fields.country.value];
   fields.salaryPeriod.value = "monthly";
   fields.salary.value = selected.salary;
-  fields.housing.value = selected.housing;
-  fields.food.value = selected.food;
-  fields.transport.value = selected.transport;
-  fields.family.value = selected.family;
+  applyFamilyDefaults();
+}
+
+function applyFamilyDefaults() {
+  const selected = marketDefaults[fields.country.value];
+  const profile = familyMultipliers[fields.familyProfile.value];
+  fields.housing.value = Math.round(selected.housing * profile.housing);
+  fields.food.value = Math.round(selected.food * profile.food);
+  fields.transport.value = Math.round(selected.transport * profile.transport);
+  fields.family.value = Math.round(selected.family * profile.family);
   fields.other.value = selected.other;
   calculate();
 }
@@ -196,11 +256,17 @@ function calculate() {
   const destinationCode = selected.code;
   const currentCode = fields.currentCountry.value;
   const salary = monthlyAmount(numberValue(fields.salary), fields.salaryPeriod.value);
-  const expenses = numberValue(fields.housing)
+  const housingCost = fields.housingProvided.checked ? 0 : numberValue(fields.housing);
+  const transportCost = fields.transportProvided.checked ? 0 : numberValue(fields.transport);
+  const familyCost = fields.schoolingProvided.checked ? Math.round(numberValue(fields.family) * 0.45) : numberValue(fields.family);
+  const otherCost = numberValue(fields.other)
+    - (fields.medicalProvided.checked ? Math.round(numberValue(fields.other) * 0.2) : 0)
+    - (fields.flightsProvided.checked ? Math.round(numberValue(fields.other) * 0.1) : 0);
+  const expenses = housingCost
     + numberValue(fields.food)
-    + numberValue(fields.transport)
-    + numberValue(fields.family)
-    + numberValue(fields.other);
+    + transportCost
+    + familyCost
+    + Math.max(otherCost, 0);
 
   const monthlySavings = salary - expenses;
   const annualSavings = convert(monthlySavings * 12, destinationCode, currentCode);
@@ -208,6 +274,7 @@ function calculate() {
   const currentMonthly = monthlyAmount(numberValue(fields.currentSalary), fields.currentSalaryPeriod.value);
   const currentMonthlyInDestination = convert(currentMonthly, currentCode, destinationCode);
   const usage = salary > 0 ? Math.min((expenses / salary) * 100, 100) : 0;
+  const savingsRate = salary > 0 ? (monthlySavings / salary) * 100 : 0;
   const uplift = currentMonthlyInDestination > 0
     ? ((salary - currentMonthlyInDestination) / currentMonthlyInDestination) * 100
     : 0;
@@ -219,21 +286,37 @@ function calculate() {
   output.annualPackage.textContent = formatCurrency(annualPackage, currentCode);
   output.annualPackageLabel.textContent = `Equivalent annual package in ${currentCode}`;
   output.currentMonthly.textContent = formatCurrency(currentMonthly, currentCode);
+  output.salaryUplift.textContent = `${Math.round(uplift)}%`;
+  output.savingsRate.textContent = `${Math.round(savingsRate)}%`;
+  output.compareCurrent.textContent = formatCurrency(currentMonthly, currentCode);
+  output.compareOffer.textContent = formatCurrency(convert(salary, destinationCode, currentCode), currentCode);
   output.usagePercent.textContent = `${Math.round(usage)}% expenses`;
   output.expenseBar.style.width = `${usage}%`;
+  output.countryNoteTitle.textContent = `${selected.label} note`;
+  output.countryNote.textContent = countryNotes[destinationCode];
 
-  if (monthlySavings <= 0) {
-    output.savingsTone.textContent = `This ${selected.label} scenario needs review because expenses consume the full salary.`;
-  } else if (usage > 70) {
-    output.savingsTone.textContent = "Savings are positive, but costs are high. Negotiate housing, schooling, or relocation support.";
+  output.decisionCard.classList.remove("accept", "negotiate", "risk");
+  if (monthlySavings <= 0 || savingsRate < 20) {
+    output.decisionLabel.textContent = "High-risk";
+    output.decisionReason.textContent = `Savings are weak for ${selected.label}. Rework base pay or benefits before accepting.`;
+    output.decisionCard.classList.add("risk");
+  } else if (usage > 70 || savingsRate < 35 || uplift < 15) {
+    output.decisionLabel.textContent = "Negotiate";
+    output.decisionReason.textContent = "The scenario is workable, but housing, schooling, transport, or base salary should be negotiated.";
+    output.decisionCard.classList.add("negotiate");
   } else if (uplift > 0) {
-    output.savingsTone.textContent = `This scenario gives roughly ${Math.round(uplift)}% higher monthly gross than your current salary after currency conversion.`;
+    output.decisionLabel.textContent = "Strong";
+    output.decisionReason.textContent = `This scenario gives about ${Math.round(uplift)}% higher monthly gross and a healthy savings rate.`;
+    output.decisionCard.classList.add("accept");
   } else {
-    output.savingsTone.textContent = "This scenario has positive savings, but the gross salary is not higher than your current converted monthly salary.";
+    output.decisionLabel.textContent = "Review";
+    output.decisionReason.textContent = "Savings are positive, but the gross salary does not clearly beat your current converted monthly salary.";
+    output.decisionCard.classList.add("negotiate");
   }
 }
 
 fields.country.addEventListener("change", applyMarketDefaults);
+fields.familyProfile.addEventListener("change", applyFamilyDefaults);
 
 [
   fields.salaryPeriod,
@@ -243,10 +326,18 @@ fields.country.addEventListener("change", applyMarketDefaults);
   fields.transport,
   fields.family,
   fields.other,
+  fields.housingProvided,
+  fields.medicalProvided,
+  fields.flightsProvided,
+  fields.transportProvided,
+  fields.schoolingProvided,
   fields.currentCountry,
   fields.currentSalaryPeriod,
   fields.currentSalary
-].forEach((field) => field.addEventListener("input", calculate));
+].forEach((field) => {
+  field.addEventListener("input", calculate);
+  field.addEventListener("change", calculate);
+});
 
 applyMarketDefaults();
 loadExchangeRates();

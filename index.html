@@ -75,6 +75,16 @@
           </label>
 
           <label>
+            Family profile
+            <select id="familyProfile">
+              <option value="single">Single</option>
+              <option value="couple">Couple</option>
+              <option value="family1">Family with 1 child</option>
+              <option value="family2">Family with 2 children</option>
+            </select>
+          </label>
+
+          <label>
             Expected salary period
             <select id="salaryPeriod">
               <option value="monthly">Monthly</option>
@@ -91,6 +101,15 @@
             Housing
             <input id="housing" type="number" min="0" step="250">
           </label>
+
+          <fieldset class="benefits">
+            <legend>Employer benefits</legend>
+            <label><input id="housingProvided" type="checkbox"> Housing provided</label>
+            <label><input id="medicalProvided" type="checkbox"> Medical insurance</label>
+            <label><input id="flightsProvided" type="checkbox"> Annual flight tickets</label>
+            <label><input id="transportProvided" type="checkbox"> Transport allowance</label>
+            <label><input id="schoolingProvided" type="checkbox"> Schooling allowance</label>
+          </fieldset>
 
           <label>
             Food and groceries
@@ -140,10 +159,10 @@
         </form>
 
         <section class="results" aria-live="polite">
-          <div class="result-main">
-            <span>Estimated monthly savings</span>
-            <strong id="monthlySavings">-</strong>
-            <p id="savingsTone">Adjust values to calculate your relocation scenario.</p>
+          <div class="decision-card" id="decisionCard">
+            <span>Decision summary</span>
+            <strong id="decisionLabel">-</strong>
+            <p id="decisionReason">Adjust values to calculate your relocation scenario.</p>
           </div>
 
           <div class="result-grid">
@@ -163,6 +182,29 @@
               <span>Current monthly gross</span>
               <strong id="currentMonthly">-</strong>
             </article>
+            <article>
+              <span>GCC vs current monthly</span>
+              <strong id="salaryUplift">-</strong>
+            </article>
+            <article>
+              <span>Monthly savings rate</span>
+              <strong id="savingsRate">-</strong>
+            </article>
+          </div>
+
+          <div class="comparison-card">
+            <div>
+              <span>Current monthly gross</span>
+              <strong id="compareCurrent">-</strong>
+            </div>
+            <div>
+              <span>GCC monthly gross</span>
+              <strong id="compareOffer">-</strong>
+            </div>
+            <div>
+              <span>Estimated monthly savings</span>
+              <strong id="monthlySavings">-</strong>
+            </div>
           </div>
 
           <div class="bar-card">
@@ -172,6 +214,11 @@
             </div>
             <div class="bar" aria-hidden="true"><span id="expenseBar"></span></div>
           </div>
+
+          <article class="country-note">
+            <span id="countryNoteTitle">Country note</span>
+            <p id="countryNote">Choose a destination to see country-specific negotiation notes.</p>
+          </article>
 
           <p class="rate-status" id="rateStatus">Loading live exchange rates...</p>
         </section>
@@ -191,8 +238,13 @@
       </article>
       <article>
         <span>03</span>
-        <h3>Portfolio proof</h3>
-        <p>This project is intentionally static, responsive, and deployable through GitHub Pages.</p>
+        <h3>Decision signal</h3>
+        <p>The result classifies each scenario as strong, negotiable, or risky based on savings and cost pressure.</p>
+      </article>
+      <article>
+        <span>04</span>
+        <h3>Disclaimer</h3>
+        <p>This planner is guidance only, not financial advice. Verify latest exchange rates, taxes, visa rules, schooling, rent, insurance, and employer benefits before making a relocation decision.</p>
       </article>
     </section>
   </main>
