@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="GCC Salary and Relocation Planner by Tauqeer Ahmed. Estimate Saudi Arabia, UAE, and Qatar salary conversion, monthly expenses, savings, and relocation readiness.">
+  <meta name="description" content="GCC Salary and Relocation Planner by Tauqeer Ahmed. Estimate Saudi Arabia, UAE, Qatar, Kuwait, Oman, and Bahrain salary conversion, monthly expenses, savings, and relocation readiness.">
   <meta name="author" content="Tauqeer Ahmed">
-  <meta name="keywords" content="GCC salary calculator, Riyadh salary planner, UAE salary planner, Qatar salary planner, INR to SAR, INR to AED, INR to QAR, Tauqeer Ahmed, taukhir">
+  <meta name="keywords" content="GCC salary calculator, Riyadh salary planner, UAE salary planner, Qatar salary planner, Kuwait salary planner, Oman salary planner, Bahrain salary planner, INR to SAR, INR to AED, INR to QAR, Tauqeer Ahmed, taukhir">
   <meta property="og:title" content="GCC Salary & Relocation Planner | Tauqeer Ahmed">
   <meta property="og:description" content="A static relocation calculator for INR to SAR/AED/QAR salary planning, monthly expense modeling, and savings projection.">
   <meta property="og:type" content="website">
@@ -28,8 +28,8 @@
         <p class="eyebrow">Built by Tauqeer Ahmed · taukhir</p>
         <h1>Salary and relocation clarity for Gulf opportunities.</h1>
         <p class="hero-copy">
-          Estimate monthly savings, INR conversion, cost assumptions, and relocation fit
-          for Saudi Arabia, UAE, and Qatar job discussions.
+          Estimate monthly savings, live currency conversion, cost assumptions, and relocation fit
+          for Saudi Arabia, UAE, Qatar, Kuwait, Oman, and Bahrain job discussions.
         </p>
         <div class="hero-actions">
           <a class="button primary" href="#calculator">Plan relocation</a>
@@ -39,10 +39,10 @@
 
       <aside class="signal-card" aria-label="Planner highlights">
         <span>scenario.model</span>
-        <strong>Riyadh · UAE · Qatar</strong>
+        <strong>Riyadh · UAE · Qatar · Kuwait · Oman · Bahrain</strong>
         <div class="signal-grid">
-          <p><b>3</b><small>GCC markets</small></p>
-          <p><b>INR</b><small>home conversion</small></p>
+          <p><b>6</b><small>GCC markets</small></p>
+          <p><b>Live</b><small>currency rates</small></p>
           <p><b>Static</b><small>GitHub Pages ready</small></p>
         </div>
       </aside>
@@ -55,8 +55,8 @@
         <p class="eyebrow">Interactive calculator</p>
         <h2>Compare salary, expenses, and expected savings.</h2>
         <p>
-          Default values are editable. Exchange rates and living costs are simple planning
-          assumptions, not financial advice.
+          Default values are editable. Exchange rates are fetched live when available
+          and fall back to built-in planning rates when the API is unavailable.
         </p>
       </div>
 
@@ -68,11 +68,22 @@
               <option value="saudi">Saudi Arabia · SAR</option>
               <option value="uae">United Arab Emirates · AED</option>
               <option value="qatar">Qatar · QAR</option>
+              <option value="kuwait">Kuwait · KWD</option>
+              <option value="oman">Oman · OMR</option>
+              <option value="bahrain">Bahrain · BHD</option>
             </select>
           </label>
 
           <label>
-            Expected monthly salary
+            Expected salary period
+            <select id="salaryPeriod">
+              <option value="monthly">Monthly</option>
+              <option value="annual">Annual</option>
+            </select>
+          </label>
+
+          <label>
+            Expected salary
             <input id="salary" type="number" min="0" step="500" value="22000">
           </label>
 
@@ -102,8 +113,29 @@
           </label>
 
           <label>
-            Current salary in India, LPA
-            <input id="indiaSalary" type="number" min="0" step="1" value="35">
+            Current salary country
+            <select id="currentCountry">
+              <option value="INR">India · INR</option>
+              <option value="SAR">Saudi Arabia · SAR</option>
+              <option value="AED">United Arab Emirates · AED</option>
+              <option value="QAR">Qatar · QAR</option>
+              <option value="KWD">Kuwait · KWD</option>
+              <option value="OMR">Oman · OMR</option>
+              <option value="BHD">Bahrain · BHD</option>
+            </select>
+          </label>
+
+          <label>
+            Current salary period
+            <select id="currentSalaryPeriod">
+              <option value="annual">Annual</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </label>
+
+          <label>
+            Current salary
+            <input id="currentSalary" type="number" min="0" step="10000" value="3500000">
           </label>
         </form>
 
@@ -120,16 +152,16 @@
               <strong id="monthlyExpenses">-</strong>
             </article>
             <article>
-              <span>Annual savings in INR</span>
-              <strong id="annualSavingsInr">-</strong>
+              <span id="annualSavingsLabel">Annual savings</span>
+              <strong id="annualSavings">-</strong>
             </article>
             <article>
-              <span>Equivalent annual package</span>
-              <strong id="annualPackageInr">-</strong>
+              <span id="annualPackageLabel">Equivalent annual package</span>
+              <strong id="annualPackage">-</strong>
             </article>
             <article>
-              <span>Current India monthly gross</span>
-              <strong id="indiaMonthly">-</strong>
+              <span>Current monthly gross</span>
+              <strong id="currentMonthly">-</strong>
             </article>
           </div>
 
@@ -140,6 +172,8 @@
             </div>
             <div class="bar" aria-hidden="true"><span id="expenseBar"></span></div>
           </div>
+
+          <p class="rate-status" id="rateStatus">Loading live exchange rates...</p>
         </section>
       </div>
     </section>
@@ -148,7 +182,7 @@
       <article>
         <span>01</span>
         <h3>Planning assumption</h3>
-        <p>Rates are configurable in code and meant for quick offer conversations before detailed financial planning.</p>
+        <p>Live rates are fetched in the browser and backed by fallback values so the planner still works offline.</p>
       </article>
       <article>
         <span>02</span>

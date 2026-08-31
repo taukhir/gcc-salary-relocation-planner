@@ -1,6 +1,6 @@
 # GCC Salary & Relocation Planner
 
-A static salary planning calculator for Gulf job conversations. It helps compare expected monthly salary, living expenses, estimated savings, INR conversion, and current India salary context for Saudi Arabia, UAE, and Qatar.
+A static salary planning calculator for Gulf job conversations. It helps compare expected salary, living expenses, estimated savings, live currency conversion, and current salary context for Saudi Arabia, UAE, Qatar, Kuwait, Oman, and Bahrain.
 
 Built by **Tauqeer Ahmed | taukhir** as a portfolio project.
 
@@ -8,19 +8,21 @@ Built by **Tauqeer Ahmed | taukhir** as a portfolio project.
 
 This project supports relocation discussions for GCC roles by turning salary expectations into a clear monthly planning view:
 
-- destination market: Saudi Arabia, UAE, Qatar
-- expected monthly salary
+- destination market: Saudi Arabia, UAE, Qatar, Kuwait, Oman, Bahrain
+- expected salary as monthly or annual
 - housing, food, transport, family, and other costs
 - monthly savings
-- annual savings in INR
-- equivalent annual package in INR
+- annual savings in the selected current-country currency
+- equivalent annual package in the selected current-country currency
+- current salary country and monthly/annual period
 
 ## Tech Stack
 
 - HTML
 - CSS
 - JavaScript
-- Static JSON-style configuration inside `script.js`
+- Live browser-side exchange-rate fetch with fallback planning rates
+- Static configuration inside `script.js`
 - GitHub Pages deployment
 
 ## Run Locally
@@ -48,7 +50,7 @@ https://taukhir.github.io/gcc-salary-relocation-planner/
 
 ## Notes
 
-Exchange rates and expenses are planning assumptions. They should be updated before using the calculator for a final compensation decision.
+Exchange rates are fetched from a public JSON exchange-rate API when available. Built-in fallback rates keep the app usable when the API is unavailable. Expenses are planning assumptions and should be reviewed before using the calculator for a final compensation decision.
 
 ## Author Links
 

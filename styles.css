@@ -349,6 +349,14 @@ select:focus {
   transition: width 220ms ease;
 }
 
+.rate-status {
+  margin: 16px 0 0;
+  color: #9aa6b3;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
 .insight-grid {
   display: grid;
   padding-top: 20px;
