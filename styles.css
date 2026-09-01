@@ -261,6 +261,36 @@ label {
   text-transform: uppercase;
 }
 
+.input-group-heading {
+  margin-top: 6px;
+  padding: 16px;
+  border: 1px solid rgba(9, 16, 25, 0.12);
+  background:
+    linear-gradient(135deg, rgba(255, 107, 53, 0.08), rgba(113, 229, 173, 0.08)),
+    rgba(255, 255, 255, 0.62);
+}
+
+.input-group-heading span,
+.input-group-heading small {
+  display: block;
+}
+
+.input-group-heading span {
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.input-group-heading small {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
 input,
 select {
   width: 100%;

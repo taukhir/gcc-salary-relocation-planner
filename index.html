@@ -99,6 +99,14 @@
           </label>
 
           <label>
+            Results view
+            <select id="resultPeriod">
+              <option value="monthly">Monthly</option>
+              <option value="annual">Annual</option>
+            </select>
+          </label>
+
+          <label>
             Housing
             <input id="housing" type="number" min="0" step="250">
           </label>
@@ -172,6 +180,31 @@
             Current salary
             <input id="currentSalary" type="number" min="0" step="10000" value="3500000">
           </label>
+
+          <div class="input-group-heading">
+            <span>Current country expenses</span>
+            <small>Used to compare savings before and after relocation.</small>
+          </div>
+
+          <label>
+            Current housing
+            <input id="currentHousing" type="number" min="0" step="1000">
+          </label>
+
+          <label>
+            Current food and groceries
+            <input id="currentFood" type="number" min="0" step="1000">
+          </label>
+
+          <label>
+            Current transport
+            <input id="currentTransport" type="number" min="0" step="1000">
+          </label>
+
+          <label>
+            Current family / other
+            <input id="currentOther" type="number" min="0" step="1000">
+          </label>
         </form>
 
         <section class="results" aria-live="polite">
@@ -183,43 +216,43 @@
 
           <div class="result-grid">
             <article>
-              <span id="destinationExpenseLabel">Monthly expenses in destination</span>
+              <span id="destinationExpenseLabel">Destination expenses</span>
               <strong id="monthlyExpenses">-</strong>
             </article>
             <article>
-              <span id="destinationSavingsLabel">Monthly savings in destination</span>
+              <span id="destinationSavingsLabel">Destination savings</span>
               <strong id="monthlySavings">-</strong>
             </article>
             <article>
-              <span id="annualPackageLabel">Equivalent annual package</span>
-              <strong id="annualPackage">-</strong>
+              <span id="homeExpenseLabel">Home expenses</span>
+              <strong id="homeExpenses">-</strong>
             </article>
             <article>
-              <span id="annualSavingsLabel">Annual savings sent home</span>
-              <strong id="annualSavings">-</strong>
+              <span id="homeSavingsLabel">Home savings today</span>
+              <strong id="homeSavings">-</strong>
             </article>
             <article>
-              <span>Offer uplift vs current</span>
-              <strong id="salaryUplift">-</strong>
+              <span id="sentHomeLabel">Savings sent home</span>
+              <strong id="sentHomeSavings">-</strong>
             </article>
             <article>
-              <span>Savings rate after expenses</span>
-              <strong id="savingsRate">-</strong>
+              <span id="netImprovementLabel">Net savings improvement</span>
+              <strong id="netImprovement">-</strong>
             </article>
           </div>
 
           <div class="comparison-card">
             <div>
-              <span id="currentMonthlyLabel">Current monthly gross</span>
+              <span id="currentMonthlyLabel">Current gross</span>
               <strong id="compareCurrent">-</strong>
             </div>
             <div>
-              <span id="offerMonthlyLabel">GCC monthly gross converted</span>
+              <span id="offerMonthlyLabel">GCC gross converted</span>
               <strong id="compareOffer">-</strong>
             </div>
             <div>
-              <span id="monthlySavingsHomeLabel">Monthly savings sent home</span>
-              <strong id="monthlySavingsHome">-</strong>
+              <span id="salaryUpliftLabel">Offer uplift vs current</span>
+              <strong id="salaryUplift">-</strong>
             </div>
           </div>
 
