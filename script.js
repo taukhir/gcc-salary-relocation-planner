@@ -1,3 +1,5 @@
+import { calculateScenario, convert, monthlyAmount, periodAmount } from "./calculator-core.js";
+
 const currencies = {
   INR: { label: "India", locale: "en-IN" },
   SAR: { label: "Saudi Arabia", locale: "en-SA" },
@@ -318,14 +320,6 @@ function formatCurrency(value, code) {
   }).format(value);
 }
 
-function monthlyAmount(amount, period) {
-  return period === "annual" ? amount / 12 : amount;
-}
-
-function periodAmount(monthlyValue, period) {
-  return period === "annual" ? monthlyValue * 12 : monthlyValue;
-}
-
 function periodLabel(period) {
   return period === "annual" ? "Annual" : "Monthly";
 }
@@ -365,12 +359,6 @@ function updateInputLabels() {
   inputLabels.currentFood.textContent = `${currentLabel} ${currentPeriod} food and groceries`;
   inputLabels.currentTransport.textContent = `${currentLabel} ${currentPeriod} transport`;
   inputLabels.currentOther.textContent = `${currentLabel} ${currentPeriod} family / other`;
-}
-
-function convert(amount, fromCode, toCode) {
-  const fromRate = ratesInInr[fromCode] || fallbackRatesInInr[fromCode];
-  const toRate = ratesInInr[toCode] || fallbackRatesInInr[toCode];
-  return (amount * fromRate) / toRate;
 }
 
 function applyMarketDefaults() {
@@ -477,59 +465,61 @@ function calculate() {
   const currentCode = fields.currentCountry.value;
   const resultPeriod = fields.salaryPeriod.value;
   const periodName = periodLabel(resultPeriod);
-  const salary = monthlyAmount(numberValue(fields.salary), fields.salaryPeriod.value);
-  const destinationInputPeriod = fields.salaryPeriod.value;
-  const rawHousing = monthlyAmount(numberValue(fields.housing), destinationInputPeriod);
-  const rawFood = monthlyAmount(numberValue(fields.food), destinationInputPeriod);
-  const rawTransport = monthlyAmount(numberValue(fields.transport), destinationInputPeriod);
-  const rawFamily = monthlyAmount(numberValue(fields.family), destinationInputPeriod);
-  const rawOther = monthlyAmount(numberValue(fields.other), destinationInputPeriod);
-  const destinationTaxRate = Math.max(0, Math.min(numberValue(fields.taxRate), 100));
-  const destinationTax = salary * (destinationTaxRate / 100);
-  const destinationNetSalary = salary - destinationTax;
-  const housingCost = fields.housingProvided.checked ? 0 : rawHousing;
-  const transportCost = fields.transportProvided.checked ? 0 : rawTransport;
-  const familyCost = fields.schoolingProvided.checked ? Math.round(rawFamily * 0.45) : rawFamily;
-  const otherCost = rawOther
-    - (fields.medicalProvided.checked ? Math.round(rawOther * 0.2) : 0)
-    - (fields.flightsProvided.checked ? Math.round(rawOther * 0.1) : 0);
-  const expenses = housingCost
-    + rawFood
-    + transportCost
-    + familyCost
-    + Math.max(otherCost, 0);
-  const expensesWithoutBenefits = rawHousing + rawFood + rawTransport + rawFamily + rawOther;
-  const benefitSavings = Math.max(expensesWithoutBenefits - expenses, 0);
-
-  const monthlySavings = destinationNetSalary - expenses;
-  const currentMonthly = monthlyAmount(numberValue(fields.currentSalary), fields.salaryPeriod.value);
-  const currentTaxRate = Math.max(0, Math.min(numberValue(fields.currentTaxRate), 100));
-  const currentTax = currentMonthly * (currentTaxRate / 100);
-  const currentNetSalary = currentMonthly - currentTax;
-  const currentExpensePeriod = fields.salaryPeriod.value;
-  const currentExpenses = monthlyAmount(numberValue(fields.currentHousing), currentExpensePeriod)
-    + monthlyAmount(numberValue(fields.currentFood), currentExpensePeriod)
-    + monthlyAmount(numberValue(fields.currentTransport), currentExpensePeriod)
-    + monthlyAmount(numberValue(fields.currentOther), currentExpensePeriod);
-  const currentSavings = currentNetSalary - currentExpenses;
-  const currentHousing = monthlyAmount(numberValue(fields.currentHousing), currentExpensePeriod);
-  const savingsSentHome = convert(monthlySavings, destinationCode, currentCode);
-  const netImprovement = savingsSentHome - currentSavings;
-  const currentMonthlyInDestination = convert(currentMonthly, currentCode, destinationCode);
-  const usage = destinationNetSalary > 0 ? Math.min((expenses / destinationNetSalary) * 100, 100) : 0;
-  const savingsRate = destinationNetSalary > 0 ? (monthlySavings / destinationNetSalary) * 100 : 0;
-  const currentSavingsRate = currentNetSalary > 0 ? (currentSavings / currentNetSalary) * 100 : 0;
-  const currentExpenseBurden = currentNetSalary > 0 ? (currentExpenses / currentNetSalary) * 100 : 0;
-  const destinationHousingBurden = destinationNetSalary > 0 ? (rawHousing / destinationNetSalary) * 100 : 0;
-  const currentHousingBurden = currentNetSalary > 0 ? (currentHousing / currentNetSalary) * 100 : 0;
-  const uplift = currentMonthlyInDestination > 0
-    ? ((salary - currentMonthlyInDestination) / currentMonthlyInDestination) * 100
-    : 0;
-  const breakEvenSalary = expenses / 0.65;
-  const savingsDifference = savingsSentHome - currentSavings;
-  const savingsDifferencePercent = currentSavings !== 0
-    ? (savingsDifference / Math.abs(currentSavings)) * 100
-    : null;
+  const result = calculateScenario({
+    destinationCode,
+    currentCode,
+    salary: numberValue(fields.salary),
+    salaryPeriod: fields.salaryPeriod.value,
+    destinationExpenses: {
+      housing: numberValue(fields.housing),
+      food: numberValue(fields.food),
+      transport: numberValue(fields.transport),
+      family: numberValue(fields.family),
+      other: numberValue(fields.other)
+    },
+    benefits: {
+      housingProvided: fields.housingProvided.checked,
+      transportProvided: fields.transportProvided.checked,
+      schoolingProvided: fields.schoolingProvided.checked,
+      medicalProvided: fields.medicalProvided.checked,
+      flightsProvided: fields.flightsProvided.checked
+    },
+    currentSalary: numberValue(fields.currentSalary),
+    currentExpenses: {
+      housing: numberValue(fields.currentHousing),
+      food: numberValue(fields.currentFood),
+      transport: numberValue(fields.currentTransport),
+      other: numberValue(fields.currentOther)
+    },
+    destinationTaxRate: Math.max(0, Math.min(numberValue(fields.taxRate), 100)),
+    currentTaxRate: Math.max(0, Math.min(numberValue(fields.currentTaxRate), 100)),
+    ratesInInr
+  });
+  const {
+    monthlySalary: salary,
+    destinationTax,
+    destinationNetSalary,
+    expenses,
+    benefitSavings,
+    monthlySavings,
+    monthlyCurrentSalary: currentMonthly,
+    currentTax,
+    currentNetSalary,
+    currentMonthlyExpenses: currentExpenses,
+    currentSavings,
+    savingsSentHome,
+    netImprovement,
+    usage,
+    savingsRate,
+    currentSavingsRate,
+    currentExpenseBurden,
+    destinationHousingBurden,
+    currentHousingBurden,
+    uplift,
+    breakEvenSalary,
+    savingsDifference,
+    savingsDifferencePercent
+  } = result;
   const destinationLabel = selected.label;
   const currentLabel = currencies[currentCode].label;
   const betterCountry = savingsDifference > 0 ? destinationLabel : savingsDifference < 0 ? currentLabel : "Same outcome";
@@ -566,7 +556,7 @@ function calculate() {
   output.salaryUpliftLabel.textContent = `Gross offer uplift`;
   output.salaryUplift.textContent = `${Math.round(uplift)}%`;
   output.compareCurrent.textContent = formatCurrency(periodAmount(currentMonthly, resultPeriod), currentCode);
-  output.compareOffer.textContent = formatCurrency(periodAmount(convert(salary, destinationCode, currentCode), resultPeriod), currentCode);
+  output.compareOffer.textContent = formatCurrency(periodAmount(convert(salary, destinationCode, currentCode, ratesInInr), resultPeriod), currentCode);
   output.expensePressure.textContent = `${Math.round(usage)}%`;
   output.expensePressureText.textContent = usage > 70
     ? `Destination expenses use ${Math.round(usage)}% of income; benefits matter.`

@@ -52,6 +52,14 @@ Open `index.html` directly in a browser, or serve the folder with any static ser
 npx serve .
 ```
 
+## Run Tests
+
+The calculation engine has Node's built-in test runner coverage for period conversion, currency conversion, taxes, employer benefits, negative savings, and rounding.
+
+```bash
+npm test
+```
+
 ## Deploy to GitHub Pages
 
 This repository includes a GitHub Actions workflow at `.github/workflows/pages.yml`.
