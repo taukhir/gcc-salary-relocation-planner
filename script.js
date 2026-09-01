@@ -181,6 +181,7 @@ let liveRatesLoaded = false;
 
 const fields = {
   country: document.querySelector("#country"),
+  scenarioPreset: document.querySelector("#scenarioPreset"),
   familyProfile: document.querySelector("#familyProfile"),
   salaryPeriod: document.querySelector("#salaryPeriod"),
   salary: document.querySelector("#salary"),
@@ -261,11 +262,51 @@ const output = {
   countryNote: document.querySelector("#countryNote"),
   usagePercent: document.querySelector("#usagePercent"),
   expenseBar: document.querySelector("#expenseBar"),
-  rateStatus: document.querySelector("#rateStatus")
+  rateStatus: document.querySelector("#rateStatus"),
+  taxStatus: document.querySelector("#taxStatus"),
+  validationMessage: document.querySelector("#validationMessage")
 };
 
 function numberValue(input) {
   return Number(input.value || 0);
+}
+
+function setValidation(message, type = "warning") {
+  output.validationMessage.textContent = message;
+  output.validationMessage.className = message ? `validation-message ${type}` : "validation-message";
+}
+
+function validateScenario() {
+  const requiredFields = [
+    [fields.salary, "GCC salary"],
+    [fields.taxRate, "destination tax rate"],
+    [fields.housing, "destination housing"],
+    [fields.food, "destination food"],
+    [fields.transport, "destination transport"],
+    [fields.family, "destination family costs"],
+    [fields.other, "destination other costs"],
+    [fields.currentSalary, "current salary"],
+    [fields.currentTaxRate, "current-country tax rate"],
+    [fields.currentHousing, "current-country housing"],
+    [fields.currentFood, "current-country food"],
+    [fields.currentTransport, "current-country transport"],
+    [fields.currentOther, "current-country other costs"]
+  ];
+  const invalid = requiredFields.find(([input]) => input.value.trim() === "" || !Number.isFinite(Number(input.value)) || Number(input.value) < 0);
+  if (invalid) {
+    setValidation(`Enter a valid non-negative value for ${invalid[1]}.`, "error");
+    return false;
+  }
+  if (numberValue(fields.taxRate) > 100 || numberValue(fields.currentTaxRate) > 100) {
+    setValidation("Tax rates must be between 0% and 100%.", "error");
+    return false;
+  }
+  if (numberValue(fields.taxRate) > 60 || numberValue(fields.currentTaxRate) > 60) {
+    setValidation("One tax rate is above 60%. Confirm this is an effective rate, not a marginal or corporate rate.", "warning");
+  } else {
+    setValidation("");
+  }
+  return true;
 }
 
 function formatCurrency(value, code) {
@@ -342,6 +383,20 @@ function applyMarketDefaults() {
   updateInputLabels();
 }
 
+function applyScenarioPreset() {
+  const preset = fields.scenarioPreset.value;
+  const profile = preset === "family" ? "family2" : preset === "couple" ? "couple" : "single";
+  fields.familyProfile.value = profile;
+  fields.housingProvided.checked = preset === "housing";
+  if (preset !== "housing") {
+    fields.medicalProvided.checked = false;
+    fields.flightsProvided.checked = false;
+    fields.transportProvided.checked = false;
+    fields.schoolingProvided.checked = false;
+  }
+  applyFamilyDefaults();
+}
+
 function applyCurrentExpenseDefaults() {
   const selected = currentExpenseDefaults[fields.currentCountry.value];
   fields.currentHousing.value = selected.housing;
@@ -373,8 +428,10 @@ function updateRateStatus() {
     timeStyle: "short"
   });
   output.rateStatus.textContent = liveRatesLoaded
-    ? `Live exchange rates loaded. Last checked: ${timestamp}.`
-    : "Using fallback planning exchange rates. Live rates could not be loaded.";
+    ? `Live exchange rates loaded · last checked ${timestamp}.`
+    : "Warning: live exchange rates unavailable. Using fallback planning rates; verify before deciding.";
+  output.rateStatus.classList.toggle("fallback", !liveRatesLoaded);
+  output.taxStatus.textContent = "Tax defaults last reviewed: September 2026 · editable effective-rate estimates, not tax advice.";
 }
 
 async function loadExchangeRates() {
@@ -412,6 +469,9 @@ async function loadExchangeRates() {
 }
 
 function calculate() {
+  if (!validateScenario()) {
+    return;
+  }
   const selected = marketDefaults[fields.country.value];
   const destinationCode = selected.code;
   const currentCode = fields.currentCountry.value;
@@ -522,6 +582,11 @@ function calculate() {
   output.countryNoteTitle.textContent = `${selected.label} note`;
   output.countryNote.textContent = `${countryNotes[destinationCode]} Current-country tax is modeled at ${currentTaxRate}% effective tax for comparison; adjust it for your actual tax regime and deductions.`;
 
+  if (monthlySavings < 0 || currentSavings < 0) {
+    const negativeCountry = monthlySavings < 0 ? destinationLabel : currentLabel;
+    setValidation(`Warning: estimated ${negativeCountry} savings are negative after tax and expenses. Review the offer or assumptions.`, "warning");
+  }
+
   output.decisionCard.classList.remove("accept", "negotiate", "risk");
   if (monthlySavings <= 0 || savingsRate < 20) {
     output.decisionLabel.textContent = "High-risk";
@@ -543,7 +608,11 @@ function calculate() {
 }
 
 fields.country.addEventListener("change", applyMarketDefaults);
-fields.familyProfile.addEventListener("change", applyFamilyDefaults);
+fields.scenarioPreset.addEventListener("change", applyScenarioPreset);
+fields.familyProfile.addEventListener("change", () => {
+  fields.scenarioPreset.value = "custom";
+  applyFamilyDefaults();
+});
 fields.currentCountry.addEventListener("change", applyCurrentExpenseDefaults);
 fields.salaryPeriod.addEventListener("change", () => {
   convertInputGroup(fields.salaryPeriod, [

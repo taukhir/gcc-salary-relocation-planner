@@ -76,6 +76,17 @@
           </label>
 
           <label>
+            Scenario preset
+            <select id="scenarioPreset">
+              <option value="single">Single professional</option>
+              <option value="couple">Couple</option>
+              <option value="family">Family with children</option>
+              <option value="housing">Employer housing provided</option>
+              <option value="custom">Custom scenario</option>
+            </select>
+          </label>
+
+          <label>
             Family profile
             <select id="familyProfile">
               <option value="single">Single</option>
@@ -319,6 +330,8 @@
           </article>
 
           <p class="rate-status" id="rateStatus">Loading live exchange rates...</p>
+          <p class="tax-status" id="taxStatus">Tax defaults last reviewed: September 2026. Adjust the effective rates for your situation.</p>
+          <p class="validation-message" id="validationMessage" role="alert" aria-live="polite"></p>
         </section>
       </div>
     </section>
