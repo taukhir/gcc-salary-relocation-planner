@@ -793,8 +793,17 @@ select:focus {
 .small-button {
   min-height: 42px;
   padding: 0 14px;
-  color: var(--white);
+  color: var(--ink);
+  border-color: var(--accent-2);
+  background: var(--accent-2);
   white-space: nowrap;
+}
+
+.small-button:hover,
+.small-button:focus-visible {
+  color: var(--white);
+  border-color: var(--white);
+  background: var(--accent);
 }
 
 .shortlist-empty {

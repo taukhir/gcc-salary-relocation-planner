@@ -659,7 +659,7 @@ function calculate() {
     : "No employer benefits selected yet.";
   output.breakEvenSalary.textContent = formatCurrency(periodAmount(breakEvenSalary, resultPeriod), destinationCode);
   output.breakEvenText.textContent = `Approximate ${periodName.toLowerCase()} salary needed to keep expenses near 65%.`;
-  output.usagePercent.textContent = `${Math.round(usage)}% expenses`;
+  output.usagePercent.textContent = `${Math.round(usage)}% of net salary`;
   output.expenseBar.style.width = `${usage}%`;
   output.countryNoteTitle.textContent = `${selected.label} note`;
   output.countryNote.textContent = `${countryNotes[destinationCode]} Current-country tax is modeled at ${currentTaxRate}% effective tax for comparison; adjust it for your actual tax regime and deductions.`;
