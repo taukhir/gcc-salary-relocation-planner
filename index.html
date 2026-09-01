@@ -99,6 +99,11 @@
           </label>
 
           <label>
+            Destination estimated tax rate (%)
+            <input id="taxRate" type="number" min="0" max="100" step="0.1" value="0">
+          </label>
+
+          <label>
             Results view
             <select id="resultPeriod">
               <option value="monthly">Monthly</option>
@@ -181,6 +186,11 @@
             <input id="currentSalary" type="number" min="0" step="10000" value="3500000">
           </label>
 
+          <label>
+            Current country estimated tax rate (%)
+            <input id="currentTaxRate" type="number" min="0" max="100" step="0.1" value="20">
+          </label>
+
           <div class="input-group-heading">
             <span id="currentExpenseHeading">Current country monthly expenses</span>
             <small id="currentExpenseHelp">Enter monthly costs. Values are converted when you switch the current salary period.</small>
@@ -216,28 +226,56 @@
 
           <div class="result-grid">
             <article>
-              <span id="destinationExpenseLabel">Destination expenses</span>
+              <span id="destinationExpenseLabel">Saudi Arabia monthly expenses</span>
               <strong id="monthlyExpenses">-</strong>
             </article>
             <article>
-              <span id="destinationSavingsLabel">Destination savings</span>
+              <span id="destinationSavingsLabel">Saudi Arabia monthly savings</span>
               <strong id="monthlySavings">-</strong>
             </article>
             <article>
-              <span id="homeExpenseLabel">Home expenses</span>
+              <span id="homeExpenseLabel">India monthly expenses</span>
               <strong id="homeExpenses">-</strong>
             </article>
             <article>
-              <span id="homeSavingsLabel">Home savings today</span>
+              <span id="homeSavingsLabel">India monthly savings today</span>
               <strong id="homeSavings">-</strong>
             </article>
             <article>
-              <span id="sentHomeLabel">Savings sent home</span>
+              <span id="sentHomeLabel">Saudi Arabia savings converted to India</span>
               <strong id="sentHomeSavings">-</strong>
             </article>
             <article>
-              <span id="netImprovementLabel">Net savings improvement</span>
+              <span id="netImprovementLabel">Savings improvement in India</span>
               <strong id="netImprovement">-</strong>
+            </article>
+            <article>
+              <span id="destinationTaxLabel">Saudi Arabia estimated tax</span>
+              <strong id="destinationTax">-</strong>
+            </article>
+            <article>
+              <span id="homeTaxLabel">India estimated tax</span>
+              <strong id="homeTax">-</strong>
+            </article>
+            <article>
+              <span id="destinationSavingsRateLabel">Saudi Arabia savings rate</span>
+              <strong id="destinationSavingsRate">-</strong>
+            </article>
+            <article>
+              <span id="homeSavingsRateLabel">India savings rate</span>
+              <strong id="homeSavingsRate">-</strong>
+            </article>
+            <article>
+              <span id="betterCountryLabel">Better savings outcome</span>
+              <strong id="betterCountry">-</strong>
+            </article>
+            <article>
+              <span id="savingsDifferenceLabel">Additional savings</span>
+              <strong id="savingsDifference">-</strong>
+            </article>
+            <article>
+              <span id="savingsDifferencePercentLabel">Additional savings percentage</span>
+              <strong id="savingsDifferencePercent">-</strong>
             </article>
           </div>
 
@@ -301,7 +339,7 @@
       <article>
         <span>02</span>
         <h3>Relocation view</h3>
-        <p>Expense inputs are monthly assumptions. The results can be viewed as monthly or annual totals.</p>
+        <p>Salary and expense inputs can be monthly or annual. Each group converts values automatically when its period changes.</p>
       </article>
       <article>
         <span>03</span>
@@ -311,7 +349,7 @@
       <article>
         <span>04</span>
         <h3>Disclaimer</h3>
-        <p>This planner is guidance only, not financial advice. Verify latest exchange rates, taxes, visa rules, schooling, rent, insurance, and employer benefits before making a relocation decision.</p>
+        <p>Tax figures are editable effective-rate estimates, not tax advice. Verify residency rules, deductions, social insurance, visa costs, rent, insurance, and employer benefits before deciding.</p>
       </article>
     </section>
   </main>

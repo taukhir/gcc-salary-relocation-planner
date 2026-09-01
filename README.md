@@ -13,6 +13,7 @@ This project supports relocation discussions for GCC roles by turning salary exp
 - expected salary as monthly or annual
 - destination housing, food, transport, family, and other cost assumptions entered as monthly or annual values
 - employer benefits: housing, medical insurance, flights, transport, schooling
+- editable estimated effective tax rate for both scenarios, with country defaults
 - monthly savings
 - monthly savings rate
 - current salary vs GCC offer comparison
@@ -25,6 +26,8 @@ This project supports relocation discussions for GCC roles by turning salary exp
 - linked monthly/annual input periods: changing the GCC salary period updates destination expense labels and values while preserving the same monthly economics
 - current-country salary and expense inputs can also be entered monthly or annually
 - separate result view for monthly or annual totals
+- dynamic country-specific comparison labels instead of generic home/destination wording
+- side-by-side tax, net savings rate, better-country, additional savings, and percentage-difference metrics
 - expense pressure, benefit impact, and break-even salary factors
 - decision summary: strong, negotiate, review, or high-risk
 - country-specific negotiation notes
@@ -68,7 +71,7 @@ https://taukhir.github.io/gcc-salary-relocation-planner/
 
 Exchange rates are fetched from a public JSON exchange-rate API when available. Built-in fallback rates keep the app usable when the API is unavailable.
 
-This planner is guidance only, not financial advice. Verify latest exchange rates, taxes, visa rules, schooling, rent, insurance, contract type, and employer benefits before making a relocation decision.
+This planner is decision support, not tax or financial advice. Tax defaults are simplified effective-rate estimates: most GCC employment scenarios are modeled at 0%, while India defaults to an editable 20% planning estimate. Verify residency, deductions, social insurance, visa rules, schooling, rent, insurance, contract type, and employer benefits before making a relocation decision.
 
 ## Author Links
 
