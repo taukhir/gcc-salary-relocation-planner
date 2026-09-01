@@ -234,6 +234,8 @@ const output = {
   monthlyExpenses: document.querySelector("#monthlyExpenses"),
   homeExpenses: document.querySelector("#homeExpenses"),
   homeSavings: document.querySelector("#homeSavings"),
+  annualDestinationSavings: document.querySelector("#annualDestinationSavings"),
+  annualCurrentSavings: document.querySelector("#annualCurrentSavings"),
   destinationTax: document.querySelector("#destinationTax"),
   homeTax: document.querySelector("#homeTax"),
   destinationNetIncome: document.querySelector("#destinationNetIncome"),
@@ -624,6 +626,8 @@ function calculate() {
   output.monthlyExpenses.textContent = formatCurrency(periodAmount(expenses, resultPeriod), destinationCode);
   output.homeExpenses.textContent = formatCurrency(periodAmount(currentExpenses, resultPeriod), currentCode);
   output.homeSavings.textContent = formatCurrency(periodAmount(currentSavings, resultPeriod), currentCode);
+  output.annualDestinationSavings.textContent = formatCurrency(periodAmount(monthlySavings, "annual"), destinationCode);
+  output.annualCurrentSavings.textContent = formatCurrency(periodAmount(currentSavings, "annual"), currentCode);
   output.destinationTax.textContent = formatCurrency(periodAmount(destinationTax, resultPeriod), destinationCode);
   output.homeTax.textContent = formatCurrency(periodAmount(currentTax, resultPeriod), currentCode);
   output.destinationNetIncome.textContent = formatCurrency(periodAmount(destinationNetSalary, resultPeriod), destinationCode);
