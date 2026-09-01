@@ -55,7 +55,9 @@ a {
 .nav {
   max-width: 1180px;
   margin: 0 auto;
-  padding: 8px 10px;
+  padding: 10px 14px;
+  gap: 32px;
+  border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(5, 16, 39, 0.42);
   backdrop-filter: blur(14px);
@@ -63,8 +65,10 @@ a {
 
 .brand {
   display: inline-flex;
+  flex: 0 0 auto;
   align-items: center;
   gap: 10px;
+  white-space: nowrap;
   font-weight: 900;
   letter-spacing: -0.04em;
 }
@@ -84,13 +88,14 @@ a {
 
 .brand-copy {
   display: grid;
-  gap: 3px;
+  gap: 4px;
 }
 
 .brand-copy strong {
   color: var(--white);
   font-size: 14px;
   letter-spacing: -0.02em;
+  white-space: nowrap;
 }
 
 .brand-copy small {
@@ -100,6 +105,7 @@ a {
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .nav div,
@@ -127,10 +133,20 @@ a {
   border-radius: 4px;
 }
 
-.nav a:not(.brand) span {
+.nav a:not(.brand) .nav-index {
+  display: inline-grid;
+  width: 22px;
+  height: 22px;
+  place-items: center;
   color: var(--accent-2);
   font-family: "Cascadia Code", Consolas, monospace;
   font-size: 10px;
+  border: 1px solid rgba(126, 208, 255, 0.24);
+  background: rgba(126, 208, 255, 0.08);
+}
+
+.nav-label {
+  white-space: nowrap;
 }
 
 .nav a:not(.brand):hover,
@@ -1052,15 +1068,14 @@ select:focus {
   }
 
   .nav {
-    align-items: center;
-    flex-direction: row;
-    flex-wrap: wrap;
+    align-items: stretch;
+    flex-direction: column;
     gap: 12px;
   }
 
   .nav > div {
     width: 100%;
-    padding-top: 4px;
+    padding-top: 0;
     overflow-x: auto;
     flex-wrap: nowrap;
     scrollbar-width: none;
@@ -1073,7 +1088,7 @@ select:focus {
   .nav a:not(.brand) {
     flex: 0 0 auto;
     min-height: 42px;
-    padding: 8px 11px;
+    padding: 8px 12px;
   }
 
   .hero {
