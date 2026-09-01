@@ -11,18 +11,18 @@ This project supports relocation discussions for GCC roles by turning salary exp
 - destination market: Saudi Arabia, UAE, Qatar, Kuwait, Oman, Bahrain
 - family profile presets: single, couple, family with 1 child, family with 2 children
 - expected salary as monthly or annual
-- housing, food, transport, family, and other costs
+- destination monthly housing, food, transport, family, and other cost assumptions
 - employer benefits: housing, medical insurance, flights, transport, schooling
 - monthly savings
 - monthly savings rate
 - current salary vs GCC offer comparison
 - destination-currency monthly expense and savings view
-- current-country expense presets and editable home expense assumptions
+- current-country monthly expense presets and editable home expense assumptions
 - home-country savings today after current expenses
 - destination-country savings after GCC expenses
 - GCC savings converted back to the selected home/current-country currency
 - net savings improvement compared with staying in the current country
-- monthly and annual result views
+- monthly inputs with monthly and annual result views
 - expense pressure, benefit impact, and break-even salary factors
 - decision summary: strong, negotiate, review, or high-risk
 - country-specific negotiation notes
