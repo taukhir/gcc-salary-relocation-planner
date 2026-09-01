@@ -1074,12 +1074,36 @@ select:focus {
     overflow: hidden;
   }
 
+  .brand {
+    gap: 7px;
+  }
+
+  .brand-mark {
+    width: 32px;
+    height: 32px;
+    font-size: 10px;
+  }
+
+  .brand-copy {
+    gap: 2px;
+  }
+
+  .brand-copy strong {
+    font-size: 11px;
+  }
+
+  .brand-copy small {
+    font-size: 7px;
+    letter-spacing: 0.04em;
+  }
+
   .nav > div {
     min-width: 0;
+    flex: 0 0 auto;
     width: auto;
     margin-left: auto;
     padding-top: 0;
-    overflow-x: auto;
+    overflow: hidden;
     flex-wrap: nowrap;
     scrollbar-width: none;
   }
@@ -1091,9 +1115,13 @@ select:focus {
   .nav a:not(.brand) {
     flex: 0 0 auto;
     min-height: 42px;
-    gap: 6px;
-    padding: 7px 9px;
-    font-size: 11px;
+    gap: 0;
+    padding: 7px 5px;
+    font-size: 10px;
+  }
+
+  .nav a:not(.brand) .nav-label {
+    display: none;
   }
 
   .nav a:not(.brand) .nav-index {
