@@ -104,14 +104,6 @@
           </label>
 
           <label>
-            Results view
-            <select id="resultPeriod">
-              <option value="monthly">Monthly</option>
-              <option value="annual">Annual</option>
-            </select>
-          </label>
-
-          <label>
             <span class="field-label" id="housingLabel">Destination monthly housing</span>
             <input id="housing" type="number" min="0" step="250">
           </label>
@@ -174,16 +166,8 @@
           </label>
 
           <label>
-            Current salary period
-            <select id="currentSalaryPeriod">
-              <option value="annual">Annual</option>
-              <option value="monthly">Monthly</option>
-            </select>
-          </label>
-
-          <label>
             Current salary
-            <input id="currentSalary" type="number" min="0" step="10000" value="3500000">
+            <input id="currentSalary" type="number" min="0" step="10000" value="291667">
           </label>
 
           <label>
@@ -218,53 +202,47 @@
         </form>
 
         <section class="results" aria-live="polite">
+          <div class="calculation-period">
+            <span>Calculation period</span>
+            <strong id="calculationPeriod">Monthly</strong>
+            <p>Both countries use the selected GCC salary period.</p>
+          </div>
+
           <div class="decision-card" id="decisionCard">
             <span>Decision summary</span>
             <strong id="decisionLabel">-</strong>
             <p id="decisionReason">Adjust values to calculate your relocation scenario.</p>
           </div>
 
-          <div class="result-grid">
-            <article>
-              <span id="destinationExpenseLabel">Saudi Arabia monthly expenses</span>
+          <div class="country-comparison">
+            <div class="comparison-heading">
+              <span>Metric</span>
+              <strong id="comparisonDestination">Saudi Arabia</strong>
+              <strong id="comparisonCurrent">India</strong>
+            </div>
+            <div class="comparison-row">
+              <span>Expenses</span>
               <strong id="monthlyExpenses">-</strong>
-            </article>
-            <article>
-              <span id="destinationSavingsLabel">Saudi Arabia monthly savings</span>
-              <strong id="monthlySavings">-</strong>
-            </article>
-            <article>
-              <span id="homeExpenseLabel">India monthly expenses</span>
               <strong id="homeExpenses">-</strong>
-            </article>
-            <article>
-              <span id="homeSavingsLabel">India monthly savings today</span>
+            </div>
+            <div class="comparison-row">
+              <span>Savings amount</span>
+              <strong id="monthlySavings">-</strong>
               <strong id="homeSavings">-</strong>
-            </article>
-            <article>
-              <span id="sentHomeLabel">Saudi Arabia savings converted to India</span>
-              <strong id="sentHomeSavings">-</strong>
-            </article>
-            <article>
-              <span id="netImprovementLabel">Savings improvement in India</span>
-              <strong id="netImprovement">-</strong>
-            </article>
-            <article>
-              <span id="destinationTaxLabel">Saudi Arabia estimated tax</span>
-              <strong id="destinationTax">-</strong>
-            </article>
-            <article>
-              <span id="homeTaxLabel">India estimated tax</span>
-              <strong id="homeTax">-</strong>
-            </article>
-            <article>
-              <span id="destinationSavingsRateLabel">Saudi Arabia savings rate</span>
+            </div>
+            <div class="comparison-row">
+              <span>Savings percentage</span>
               <strong id="destinationSavingsRate">-</strong>
-            </article>
-            <article>
-              <span id="homeSavingsRateLabel">India savings rate</span>
               <strong id="homeSavingsRate">-</strong>
-            </article>
+            </div>
+            <div class="comparison-row">
+              <span>Estimated tax</span>
+              <strong id="destinationTax">-</strong>
+              <strong id="homeTax">-</strong>
+            </div>
+          </div>
+
+          <div class="comparison-summary">
             <article>
               <span id="betterCountryLabel">Better savings outcome</span>
               <strong id="betterCountry">-</strong>

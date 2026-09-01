@@ -183,7 +183,6 @@ const fields = {
   country: document.querySelector("#country"),
   familyProfile: document.querySelector("#familyProfile"),
   salaryPeriod: document.querySelector("#salaryPeriod"),
-  resultPeriod: document.querySelector("#resultPeriod"),
   salary: document.querySelector("#salary"),
   taxRate: document.querySelector("#taxRate"),
   housing: document.querySelector("#housing"),
@@ -197,7 +196,6 @@ const fields = {
   transportProvided: document.querySelector("#transportProvided"),
   schoolingProvided: document.querySelector("#schoolingProvided"),
   currentCountry: document.querySelector("#currentCountry"),
-  currentSalaryPeriod: document.querySelector("#currentSalaryPeriod"),
   currentSalary: document.querySelector("#currentSalary"),
   currentTaxRate: document.querySelector("#currentTaxRate"),
   currentHousing: document.querySelector("#currentHousing"),
@@ -223,30 +221,21 @@ const inputLabels = {
 const output = {
   monthlySavings: document.querySelector("#monthlySavings"),
   monthlyExpenses: document.querySelector("#monthlyExpenses"),
-  destinationExpenseLabel: document.querySelector("#destinationExpenseLabel"),
-  destinationSavingsLabel: document.querySelector("#destinationSavingsLabel"),
   homeExpenses: document.querySelector("#homeExpenses"),
-  homeExpenseLabel: document.querySelector("#homeExpenseLabel"),
   homeSavings: document.querySelector("#homeSavings"),
-  homeSavingsLabel: document.querySelector("#homeSavingsLabel"),
-  sentHomeSavings: document.querySelector("#sentHomeSavings"),
-  sentHomeLabel: document.querySelector("#sentHomeLabel"),
-  netImprovement: document.querySelector("#netImprovement"),
-  netImprovementLabel: document.querySelector("#netImprovementLabel"),
   destinationTax: document.querySelector("#destinationTax"),
-  destinationTaxLabel: document.querySelector("#destinationTaxLabel"),
   homeTax: document.querySelector("#homeTax"),
-  homeTaxLabel: document.querySelector("#homeTaxLabel"),
   destinationSavingsRate: document.querySelector("#destinationSavingsRate"),
-  destinationSavingsRateLabel: document.querySelector("#destinationSavingsRateLabel"),
   homeSavingsRate: document.querySelector("#homeSavingsRate"),
-  homeSavingsRateLabel: document.querySelector("#homeSavingsRateLabel"),
   betterCountry: document.querySelector("#betterCountry"),
   betterCountryLabel: document.querySelector("#betterCountryLabel"),
   savingsDifference: document.querySelector("#savingsDifference"),
   savingsDifferenceLabel: document.querySelector("#savingsDifferenceLabel"),
   savingsDifferencePercent: document.querySelector("#savingsDifferencePercent"),
   savingsDifferencePercentLabel: document.querySelector("#savingsDifferencePercentLabel"),
+  calculationPeriod: document.querySelector("#calculationPeriod"),
+  comparisonDestination: document.querySelector("#comparisonDestination"),
+  comparisonCurrent: document.querySelector("#comparisonCurrent"),
   currentMonthlyLabel: document.querySelector("#currentMonthlyLabel"),
   offerMonthlyLabel: document.querySelector("#offerMonthlyLabel"),
   salaryUpliftLabel: document.querySelector("#salaryUpliftLabel"),
@@ -310,7 +299,7 @@ function convertInputGroup(periodField, linkedFields) {
 
 function updateInputLabels() {
   const destinationPeriod = periodLabel(fields.salaryPeriod.value).toLowerCase();
-  const currentPeriod = periodLabel(fields.currentSalaryPeriod.value).toLowerCase();
+  const currentPeriod = destinationPeriod;
   const destinationLabel = marketDefaults[fields.country.value].label;
   const currentLabel = currencies[fields.currentCountry.value].label;
   const destinationLabels = {
@@ -355,7 +344,7 @@ function applyCurrentExpenseDefaults() {
   fields.currentOther.value = selected.other;
   fields.currentTaxRate.value = defaultTaxRates[fields.currentCountry.value];
   [fields.currentHousing, fields.currentFood, fields.currentTransport, fields.currentOther]
-    .forEach((input) => changePeriodValue(input, "monthly", fields.currentSalaryPeriod.value));
+    .forEach((input) => changePeriodValue(input, "monthly", fields.salaryPeriod.value));
   updateInputLabels();
   calculate();
 }
@@ -420,7 +409,7 @@ function calculate() {
   const selected = marketDefaults[fields.country.value];
   const destinationCode = selected.code;
   const currentCode = fields.currentCountry.value;
-  const resultPeriod = fields.resultPeriod.value;
+  const resultPeriod = fields.salaryPeriod.value;
   const periodName = periodLabel(resultPeriod);
   const salary = monthlyAmount(numberValue(fields.salary), fields.salaryPeriod.value);
   const destinationInputPeriod = fields.salaryPeriod.value;
@@ -447,11 +436,11 @@ function calculate() {
   const benefitSavings = Math.max(expensesWithoutBenefits - expenses, 0);
 
   const monthlySavings = destinationNetSalary - expenses;
-  const currentMonthly = monthlyAmount(numberValue(fields.currentSalary), fields.currentSalaryPeriod.value);
+  const currentMonthly = monthlyAmount(numberValue(fields.currentSalary), fields.salaryPeriod.value);
   const currentTaxRate = Math.max(0, Math.min(numberValue(fields.currentTaxRate), 100));
   const currentTax = currentMonthly * (currentTaxRate / 100);
   const currentNetSalary = currentMonthly - currentTax;
-  const currentExpensePeriod = fields.currentSalaryPeriod.value;
+  const currentExpensePeriod = fields.salaryPeriod.value;
   const currentExpenses = monthlyAmount(numberValue(fields.currentHousing), currentExpensePeriod)
     + monthlyAmount(numberValue(fields.currentFood), currentExpensePeriod)
     + monthlyAmount(numberValue(fields.currentTransport), currentExpensePeriod)
@@ -475,16 +464,9 @@ function calculate() {
   const currentLabel = currencies[currentCode].label;
   const betterCountry = savingsDifference > 0 ? destinationLabel : savingsDifference < 0 ? currentLabel : "Same outcome";
 
-  output.destinationExpenseLabel.textContent = `${destinationLabel} ${periodName.toLowerCase()} expenses`;
-  output.destinationSavingsLabel.textContent = `${destinationLabel} ${periodName.toLowerCase()} savings`;
-  output.homeExpenseLabel.textContent = `${currentLabel} ${periodName.toLowerCase()} expenses`;
-  output.homeSavingsLabel.textContent = `${currentLabel} ${periodName.toLowerCase()} savings`;
-  output.sentHomeLabel.textContent = `${destinationLabel} savings converted to ${currentLabel}`;
-  output.netImprovementLabel.textContent = `Savings improvement in ${currentLabel}`;
-  output.destinationTaxLabel.textContent = `${destinationLabel} estimated tax`;
-  output.homeTaxLabel.textContent = `${currentLabel} estimated tax`;
-  output.destinationSavingsRateLabel.textContent = `${destinationLabel} savings rate`;
-  output.homeSavingsRateLabel.textContent = `${currentLabel} savings rate`;
+  output.calculationPeriod.textContent = periodName;
+  output.comparisonDestination.textContent = `${destinationLabel} · ${destinationCode}`;
+  output.comparisonCurrent.textContent = `${currentLabel} · ${currentCode}`;
   output.betterCountryLabel.textContent = `Better savings outcome: ${destinationLabel} vs ${currentLabel}`;
   output.savingsDifferenceLabel.textContent = savingsDifference === 0
     ? "Savings difference"
@@ -494,8 +476,6 @@ function calculate() {
   output.monthlyExpenses.textContent = formatCurrency(periodAmount(expenses, resultPeriod), destinationCode);
   output.homeExpenses.textContent = formatCurrency(periodAmount(currentExpenses, resultPeriod), currentCode);
   output.homeSavings.textContent = formatCurrency(periodAmount(currentSavings, resultPeriod), currentCode);
-  output.sentHomeSavings.textContent = formatCurrency(periodAmount(savingsSentHome, resultPeriod), currentCode);
-  output.netImprovement.textContent = formatCurrency(periodAmount(netImprovement, resultPeriod), currentCode);
   output.destinationTax.textContent = formatCurrency(periodAmount(destinationTax, resultPeriod), destinationCode);
   output.homeTax.textContent = formatCurrency(periodAmount(currentTax, resultPeriod), currentCode);
   output.destinationSavingsRate.textContent = `${Math.round(savingsRate)}%`;
@@ -505,8 +485,8 @@ function calculate() {
   output.savingsDifferencePercent.textContent = savingsDifferencePercent === null
     ? "New baseline"
     : `${savingsDifferencePercent >= 0 ? "+" : ""}${Math.round(savingsDifferencePercent)}%`;
-  output.currentMonthlyLabel.textContent = `${periodName} current gross in ${currentCode}`;
-  output.offerMonthlyLabel.textContent = `${periodName} GCC gross converted to ${currentCode}`;
+  output.currentMonthlyLabel.textContent = `${currentLabel} ${periodName.toLowerCase()} gross`;
+  output.offerMonthlyLabel.textContent = `${destinationLabel} ${periodName.toLowerCase()} gross converted to ${currentCode}`;
   output.salaryUpliftLabel.textContent = `Gross offer uplift`;
   output.salaryUplift.textContent = `${Math.round(uplift)}%`;
   output.compareCurrent.textContent = formatCurrency(periodAmount(currentMonthly, resultPeriod), currentCode);
@@ -556,13 +536,7 @@ fields.salaryPeriod.addEventListener("change", () => {
     fields.food,
     fields.transport,
     fields.family,
-    fields.other
-  ]);
-  updateInputLabels();
-  calculate();
-});
-fields.currentSalaryPeriod.addEventListener("change", () => {
-  convertInputGroup(fields.currentSalaryPeriod, [
+    fields.other,
     fields.currentSalary,
     fields.currentHousing,
     fields.currentFood,
@@ -574,7 +548,6 @@ fields.currentSalaryPeriod.addEventListener("change", () => {
 });
 
 [
-  fields.resultPeriod,
   fields.salary,
   fields.housing,
   fields.food,
@@ -601,6 +574,5 @@ fields.currentSalaryPeriod.addEventListener("change", () => {
 applyMarketDefaults();
 applyCurrentExpenseDefaults();
 fields.salaryPeriod.dataset.previousPeriod = fields.salaryPeriod.value;
-fields.currentSalaryPeriod.dataset.previousPeriod = fields.currentSalaryPeriod.value;
 updateInputLabels();
 loadExchangeRates();

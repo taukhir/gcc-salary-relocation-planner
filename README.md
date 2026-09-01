@@ -17,15 +17,15 @@ This project supports relocation discussions for GCC roles by turning salary exp
 - monthly savings
 - monthly savings rate
 - current salary vs GCC offer comparison
-- destination-currency monthly expense and savings view
-- current-country monthly expense presets and editable home expense assumptions
+- destination-currency expense and savings view in the selected period
+- current-country expense presets and editable comparison assumptions
 - home-country savings today after current expenses
 - destination-country savings after GCC expenses
 - GCC savings converted back to the selected home/current-country currency
 - net savings improvement compared with staying in the current country
-- linked monthly/annual input periods: changing the GCC salary period updates destination expense labels and values while preserving the same monthly economics
-- current-country salary and expense inputs can also be entered monthly or annually
-- separate result view for monthly or annual totals
+- one shared monthly/annual calculation period: the selected GCC salary period drives both country inputs and results
+- changing the period updates every salary and expense value while preserving the same monthly economics
+- left/right country comparison for expenses, savings, savings rate, and estimated tax
 - dynamic country-specific comparison labels instead of generic home/destination wording
 - side-by-side tax, net savings rate, better-country, additional savings, and percentage-difference metrics
 - expense pressure, benefit impact, and break-even salary factors
@@ -33,7 +33,7 @@ This project supports relocation discussions for GCC roles by turning salary exp
 - country-specific negotiation notes
 - annual savings in the selected current-country currency
 - equivalent annual package in the selected current-country currency
-- current salary country and monthly/annual period
+- current salary country with the shared monthly/annual calculation period
 
 ## Tech Stack
 
