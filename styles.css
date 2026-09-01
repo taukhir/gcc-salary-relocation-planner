@@ -52,9 +52,33 @@ a {
   gap: 20px;
 }
 
+.nav {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(5, 16, 39, 0.42);
+  backdrop-filter: blur(14px);
+}
+
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-weight: 900;
   letter-spacing: -0.04em;
+}
+
+.brand-mark {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  color: var(--ink);
+  background: var(--accent-2);
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 14px;
+  font-weight: 900;
 }
 
 .nav div,
@@ -66,10 +90,34 @@ a {
 
 .nav a:not(.brand),
 .footer a {
-  padding: 10px 12px;
-  border: 1px solid var(--line-dark);
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid transparent;
   font-size: 13px;
   font-weight: 800;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+.nav a:not(.brand) {
+  gap: 8px;
+  color: #c9d8f1;
+  border-radius: 4px;
+}
+
+.nav a:not(.brand) span {
+  color: var(--accent-2);
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 10px;
+}
+
+.nav a:not(.brand):hover,
+.nav a:not(.brand):focus-visible {
+  color: var(--white);
+  border-color: rgba(126, 208, 255, 0.4);
+  background: rgba(61, 125, 242, 0.2);
+  transform: translateY(-1px);
 }
 
 .hero-grid {
@@ -713,14 +761,44 @@ select:focus {
 }
 
 .footer {
-  padding: 32px clamp(20px, 4vw, 64px);
+  padding: 38px clamp(20px, 4vw, 64px);
   color: var(--white);
   background: var(--ink);
+  border-top: 1px solid rgba(126, 208, 255, 0.2);
 }
 
 .footer p {
   margin: 0;
   color: #aeb9c5;
+  font-size: 13px;
+}
+
+.footer div {
+  gap: 8px;
+}
+
+.footer a {
+  gap: 8px;
+  color: #c9d8f1;
+  border-color: rgba(126, 208, 255, 0.18);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.footer a span {
+  color: var(--accent-2);
+  transition: transform 160ms ease;
+}
+
+.footer a:hover,
+.footer a:focus-visible {
+  color: var(--white);
+  border-color: var(--accent-2);
+  background: rgba(61, 125, 242, 0.2);
+}
+
+.footer a:hover span,
+.footer a:focus-visible span {
+  transform: translateX(3px);
 }
 
 @media (max-width: 900px) {
@@ -731,7 +809,7 @@ select:focus {
   }
 
   .hero-grid {
-    margin-top: 74px;
+    margin-top: 68px;
   }
 
   .inputs {
@@ -759,6 +837,40 @@ select:focus {
     flex-direction: column;
   }
 
+  .footer div {
+    width: 100%;
+  }
+
+  .footer a {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .nav {
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .nav > div {
+    width: 100%;
+    padding-top: 4px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+  }
+
+  .nav > div::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav a:not(.brand) {
+    flex: 0 0 auto;
+    min-height: 42px;
+    padding: 8px 11px;
+  }
+
   .hero {
     max-width: 100vw;
     overflow: hidden;
@@ -772,7 +884,7 @@ select:focus {
     margin-right: 0;
     margin-left: 0;
     grid-template-columns: minmax(0, 1fr);
-    gap: 36px;
+    gap: 30px;
   }
 
   .hero-grid > *,
@@ -851,8 +963,21 @@ select:focus {
   }
 
   .section {
-    padding-right: 20px;
-    padding-left: 20px;
+    padding: 58px 20px;
+  }
+
+  .inputs,
+  .results {
+    padding: 20px;
+  }
+
+  .inputs {
+    gap: 14px;
+  }
+
+  input,
+  select {
+    min-height: 52px;
   }
 
   .section-heading {
