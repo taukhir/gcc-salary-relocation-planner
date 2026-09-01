@@ -360,6 +360,34 @@ select:focus {
   background: var(--white);
 }
 
+.confidence-panel {
+  display: grid;
+  padding: 14px;
+  border: 1px solid rgba(7, 21, 47, 0.12);
+  background: rgba(61, 125, 242, 0.06);
+  gap: 12px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.confidence-panel div {
+  display: grid;
+  gap: 5px;
+}
+
+.confidence-panel span {
+  color: var(--muted);
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.confidence-panel strong {
+  color: var(--ink-soft);
+  font-size: 11px;
+}
+
 .benefits {
   display: grid;
   margin: 0;
@@ -727,6 +755,121 @@ select:focus {
   line-height: 1.6;
 }
 
+.offer-shortlist {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid var(--line-dark);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.shortlist-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.shortlist-heading > div {
+  min-width: 0;
+}
+
+.shortlist-heading span {
+  display: block;
+  color: var(--accent-2);
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.shortlist-heading p {
+  margin: 8px 0 0;
+  color: #aeb9c5;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.small-button {
+  min-height: 42px;
+  padding: 0 14px;
+  color: var(--white);
+  white-space: nowrap;
+}
+
+.shortlist-empty {
+  margin: 16px 0 0;
+  color: #8f9daf;
+  font-size: 12px;
+}
+
+.shortlist-empty[hidden] {
+  display: none;
+}
+
+.shortlist-list {
+  display: grid;
+  margin-top: 14px;
+  gap: 10px;
+}
+
+.shortlist-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid var(--line-dark);
+  background: rgba(7, 21, 47, 0.46);
+}
+
+.shortlist-card span {
+  display: block;
+  color: var(--accent-2);
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.shortlist-card strong {
+  display: block;
+  margin-top: 6px;
+  color: var(--white);
+  font-size: 18px;
+}
+
+.shortlist-card p,
+.shortlist-card small {
+  display: block;
+  margin: 6px 0 0;
+  color: #aeb9c5;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.shortlist-card small {
+  color: #c9d8f1;
+}
+
+.remove-offer {
+  padding: 8px 10px;
+  color: #aeb9c5;
+  border: 1px solid var(--line-dark);
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.remove-offer:hover,
+.remove-offer:focus-visible {
+  color: var(--white);
+  border-color: #ffb5c0;
+}
+
 .rate-status {
   margin: 16px 0 0;
   color: #9aa6b3;
@@ -954,6 +1097,28 @@ select:focus {
 
   .calculation-period p {
     margin: 0;
+  }
+
+  .confidence-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .shortlist-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .small-button {
+    width: 100%;
+  }
+
+  .shortlist-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .remove-offer {
+    width: 100%;
   }
 
   .comparison-heading > *,

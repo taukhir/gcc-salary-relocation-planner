@@ -186,6 +186,19 @@
             <input id="currentTaxRate" type="number" min="0" max="100" step="0.1" value="20">
           </label>
 
+          <div class="confidence-panel" aria-label="Input confidence and source indicators">
+            <div>
+              <span>Input source</span>
+              <strong id="destinationConfidence">Destination: preset estimate</strong>
+              <strong id="currentConfidence">Current country: preset estimate</strong>
+            </div>
+            <div>
+              <span>Model status</span>
+              <strong id="presetConfidence">Scenario: Single professional</strong>
+              <strong id="benefitsConfidence">Benefits: none selected</strong>
+            </div>
+          </div>
+
           <div class="input-group-heading">
             <span id="currentExpenseHeading">Current country monthly expenses</span>
             <small id="currentExpenseHelp">Enter costs using the shared calculation period selected above.</small>
@@ -328,6 +341,18 @@
             <span id="countryNoteTitle">Country note</span>
             <p id="countryNote">Choose a destination to see country-specific negotiation notes.</p>
           </article>
+
+          <section class="offer-shortlist" aria-labelledby="offerShortlistTitle">
+            <div class="shortlist-heading">
+              <div>
+                <span id="offerShortlistTitle">Offer shortlist</span>
+                <p>Save offers and compare their estimated savings against the same current-country baseline.</p>
+              </div>
+              <button class="button small-button" id="saveScenario" type="button">Save current offer</button>
+            </div>
+            <p class="shortlist-empty" id="shortlistEmpty">No saved offers yet.</p>
+            <div class="shortlist-list" id="shortlistList"></div>
+          </section>
 
           <p class="rate-status" id="rateStatus">Loading live exchange rates...</p>
           <p class="tax-status" id="taxStatus">Tax defaults last reviewed: September 2026. Adjust the effective rates for your situation.</p>

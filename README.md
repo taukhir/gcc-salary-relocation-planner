@@ -28,6 +28,8 @@ This project supports relocation discussions for GCC roles by turning salary exp
 - left/right country comparison for expenses, savings, savings rate, and estimated tax
 - dynamic country-specific comparison labels instead of generic home/destination wording
 - side-by-side tax, net savings rate, better-country, additional savings, and percentage-difference metrics
+- confidence indicators for preset estimates, user-provided values, exchange-rate fallback state, and employer benefits
+- browser-local offer shortlist for comparing up to six GCC offers against the same baseline
 - expense pressure, benefit impact, and break-even salary factors
 - decision summary: strong, negotiate, review, or high-risk
 - country-specific negotiation notes

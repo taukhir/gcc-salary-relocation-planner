@@ -180,6 +180,14 @@ const fallbackRatesInInr = {
 
 let ratesInInr = { ...fallbackRatesInInr };
 let liveRatesLoaded = false;
+let lastCalculation = null;
+let sourceState = { destination: false, current: false };
+let savedScenarios = [];
+try {
+  savedScenarios = JSON.parse(localStorage.getItem("gcc-planner-offers") || "[]");
+} catch {
+  savedScenarios = [];
+}
 
 const fields = {
   country: document.querySelector("#country"),
@@ -266,7 +274,14 @@ const output = {
   expenseBar: document.querySelector("#expenseBar"),
   rateStatus: document.querySelector("#rateStatus"),
   taxStatus: document.querySelector("#taxStatus"),
-  validationMessage: document.querySelector("#validationMessage")
+  validationMessage: document.querySelector("#validationMessage"),
+  destinationConfidence: document.querySelector("#destinationConfidence"),
+  currentConfidence: document.querySelector("#currentConfidence"),
+  presetConfidence: document.querySelector("#presetConfidence"),
+  benefitsConfidence: document.querySelector("#benefitsConfidence"),
+  saveScenario: document.querySelector("#saveScenario"),
+  shortlistEmpty: document.querySelector("#shortlistEmpty"),
+  shortlistList: document.querySelector("#shortlistList")
 };
 
 function numberValue(input) {
@@ -309,6 +324,69 @@ function validateScenario() {
     setValidation("");
   }
   return true;
+}
+
+function updateConfidenceIndicators() {
+  output.destinationConfidence.textContent = `Destination: ${sourceState.destination ? "user-provided" : "preset estimate"}`;
+  output.currentConfidence.textContent = `Current country: ${sourceState.current ? "user-provided" : "preset estimate"}`;
+  const presetLabel = fields.scenarioPreset.options[fields.scenarioPreset.selectedIndex]?.text || "Custom scenario";
+  output.presetConfidence.textContent = `Scenario: ${presetLabel}`;
+  const benefits = [
+    fields.housingProvided,
+    fields.medicalProvided,
+    fields.flightsProvided,
+    fields.transportProvided,
+    fields.schoolingProvided
+  ].filter((field) => field.checked).length;
+  output.benefitsConfidence.textContent = benefits
+    ? `Benefits: ${benefits} employer benefit${benefits === 1 ? "" : "s"} selected`
+    : "Benefits: none selected";
+}
+
+function persistSavedScenarios() {
+  try {
+    localStorage.setItem("gcc-planner-offers", JSON.stringify(savedScenarios));
+  } catch {
+    // The shortlist still works for the current session when storage is unavailable.
+  }
+}
+
+function renderSavedScenarios() {
+  output.shortlistEmpty.hidden = savedScenarios.length > 0;
+  output.shortlistList.innerHTML = savedScenarios
+    .map((scenario, index) => `
+      <article class="shortlist-card">
+        <div>
+          <span>${scenario.country} · ${scenario.code}</span>
+          <strong>${formatCurrency(scenario.savings, scenario.code)} savings</strong>
+          <p>${scenario.period} · ${formatCurrency(scenario.salary, scenario.code)} salary · ${Math.round(scenario.savingsRate)}% savings rate</p>
+          <small>≈ ${formatCurrency(scenario.savingsInCurrent, scenario.currentCode)} in ${scenario.currentCountry}</small>
+        </div>
+        <button class="remove-offer" type="button" data-index="${index}" aria-label="Remove ${scenario.country} offer">Remove</button>
+      </article>`)
+    .join("");
+}
+
+function saveCurrentScenario() {
+  if (!lastCalculation) {
+    return;
+  }
+  const selected = marketDefaults[fields.country.value];
+  savedScenarios.unshift({
+    country: selected.label,
+    code: selected.code,
+    period: periodLabel(fields.salaryPeriod.value),
+    salary: numberValue(fields.salary),
+    savings: periodAmount(lastCalculation.monthlySavings, fields.salaryPeriod.value),
+    savingsInCurrent: periodAmount(lastCalculation.savingsSentHome, fields.salaryPeriod.value),
+    currentCountry: currencies[fields.currentCountry.value].label,
+    currentCode: fields.currentCountry.value,
+    savingsRate: lastCalculation.savingsRate,
+    savedAt: Date.now()
+  });
+  savedScenarios = savedScenarios.slice(0, 6);
+  persistSavedScenarios();
+  renderSavedScenarios();
 }
 
 function formatCurrency(value, code) {
@@ -363,6 +441,7 @@ function updateInputLabels() {
 
 function applyMarketDefaults() {
   const selected = marketDefaults[fields.country.value];
+  sourceState.destination = false;
   fields.salaryPeriod.value = "monthly";
   fields.salaryPeriod.dataset.previousPeriod = "monthly";
   fields.salary.value = selected.salary;
@@ -373,6 +452,12 @@ function applyMarketDefaults() {
 
 function applyScenarioPreset() {
   const preset = fields.scenarioPreset.value;
+  if (preset === "custom") {
+    updateConfidenceIndicators();
+    calculate();
+    return;
+  }
+  sourceState.destination = false;
   const profile = preset === "family" ? "family2" : preset === "couple" ? "couple" : "single";
   fields.familyProfile.value = profile;
   fields.housingProvided.checked = preset === "housing";
@@ -387,6 +472,7 @@ function applyScenarioPreset() {
 
 function applyCurrentExpenseDefaults() {
   const selected = currentExpenseDefaults[fields.currentCountry.value];
+  sourceState.current = false;
   fields.currentHousing.value = selected.housing;
   fields.currentFood.value = selected.food;
   fields.currentTransport.value = selected.transport;
@@ -520,6 +606,8 @@ function calculate() {
     savingsDifference,
     savingsDifferencePercent
   } = result;
+  lastCalculation = result;
+  updateConfidenceIndicators();
   const destinationLabel = selected.label;
   const currentLabel = currencies[currentCode].label;
   const betterCountry = savingsDifference > 0 ? destinationLabel : savingsDifference < 0 ? currentLabel : "Same outcome";
@@ -621,6 +709,19 @@ fields.salaryPeriod.addEventListener("change", () => {
   updateInputLabels();
   calculate();
 });
+output.saveScenario.addEventListener("click", saveCurrentScenario);
+output.shortlistList.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-index]");
+  if (!button) {
+    return;
+  }
+  savedScenarios.splice(Number(button.dataset.index), 1);
+  persistSavedScenarios();
+  renderSavedScenarios();
+});
+
+const destinationInputs = [fields.salary, fields.taxRate, fields.housing, fields.food, fields.transport, fields.family, fields.other];
+const currentInputs = [fields.currentSalary, fields.currentTaxRate, fields.currentHousing, fields.currentFood, fields.currentTransport, fields.currentOther];
 
 [
   fields.salary,
@@ -642,7 +743,15 @@ fields.salaryPeriod.addEventListener("change", () => {
   fields.currentTransport,
   fields.currentOther
 ].forEach((field) => {
-  field.addEventListener("input", calculate);
+  field.addEventListener("input", () => {
+    if (destinationInputs.includes(field)) {
+      sourceState.destination = true;
+    }
+    if (currentInputs.includes(field)) {
+      sourceState.current = true;
+    }
+    calculate();
+  });
   field.addEventListener("change", calculate);
 });
 
@@ -650,4 +759,5 @@ applyMarketDefaults();
 applyCurrentExpenseDefaults();
 fields.salaryPeriod.dataset.previousPeriod = fields.salaryPeriod.value;
 updateInputLabels();
+renderSavedScenarios();
 loadExchangeRates();
