@@ -1068,13 +1068,16 @@ select:focus {
   }
 
   .nav {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 12px;
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+    overflow: hidden;
   }
 
   .nav > div {
-    width: 100%;
+    min-width: 0;
+    width: auto;
+    margin-left: auto;
     padding-top: 0;
     overflow-x: auto;
     flex-wrap: nowrap;
@@ -1088,7 +1091,14 @@ select:focus {
   .nav a:not(.brand) {
     flex: 0 0 auto;
     min-height: 42px;
-    padding: 8px 12px;
+    gap: 6px;
+    padding: 7px 9px;
+    font-size: 11px;
+  }
+
+  .nav a:not(.brand) .nav-index {
+    width: 24px;
+    height: 24px;
   }
 
   .hero {
