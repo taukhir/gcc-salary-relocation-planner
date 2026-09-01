@@ -156,6 +156,7 @@ h1 span,
 .decision-card span,
 .result-grid span,
 .comparison-card span,
+.factor-grid span,
 .bar-label span,
 .country-note span,
 .insight-grid span {
@@ -456,11 +457,25 @@ select:focus {
   grid-template-columns: repeat(3, 1fr);
 }
 
+.factor-grid {
+  display: grid;
+  margin-top: 18px;
+  gap: 12px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
 .comparison-card > div {
   min-height: 118px;
   padding: 18px;
   border-right: 1px solid var(--line-dark);
   border-bottom: 1px solid var(--line-dark);
+}
+
+.factor-grid article {
+  min-height: 142px;
+  padding: 18px;
+  border: 1px solid var(--line-dark);
+  background: rgba(255, 255, 255, 0.035);
 }
 
 .comparison-card strong {
@@ -469,6 +484,21 @@ select:focus {
   color: var(--white);
   font-size: 22px;
   letter-spacing: -0.04em;
+}
+
+.factor-grid strong {
+  display: block;
+  margin-top: 18px;
+  color: var(--white);
+  font-size: 24px;
+  letter-spacing: -0.045em;
+}
+
+.factor-grid p {
+  margin: 10px 0 0;
+  color: #9faab6;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .bar-card {
@@ -635,6 +665,7 @@ select:focus {
   .signal-grid,
   .result-grid,
   .comparison-card,
+  .factor-grid,
   .insight-grid {
     grid-template-columns: 1fr;
   }

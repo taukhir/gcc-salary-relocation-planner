@@ -16,6 +16,9 @@ This project supports relocation discussions for GCC roles by turning salary exp
 - monthly savings
 - monthly savings rate
 - current salary vs GCC offer comparison
+- destination-currency monthly expense and savings view
+- home/current-country converted monthly and annual savings
+- expense pressure, benefit impact, and break-even salary factors
 - decision summary: strong, negotiate, review, or high-risk
 - country-specific negotiation notes
 - annual savings in the selected current-country currency

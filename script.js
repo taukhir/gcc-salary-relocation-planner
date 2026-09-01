@@ -146,16 +146,27 @@ const fields = {
 
 const output = {
   monthlySavings: document.querySelector("#monthlySavings"),
+  monthlySavingsHome: document.querySelector("#monthlySavingsHome"),
   monthlyExpenses: document.querySelector("#monthlyExpenses"),
+  destinationExpenseLabel: document.querySelector("#destinationExpenseLabel"),
+  destinationSavingsLabel: document.querySelector("#destinationSavingsLabel"),
   annualSavings: document.querySelector("#annualSavings"),
   annualSavingsLabel: document.querySelector("#annualSavingsLabel"),
   annualPackage: document.querySelector("#annualPackage"),
   annualPackageLabel: document.querySelector("#annualPackageLabel"),
-  currentMonthly: document.querySelector("#currentMonthly"),
+  currentMonthlyLabel: document.querySelector("#currentMonthlyLabel"),
+  offerMonthlyLabel: document.querySelector("#offerMonthlyLabel"),
+  monthlySavingsHomeLabel: document.querySelector("#monthlySavingsHomeLabel"),
   salaryUplift: document.querySelector("#salaryUplift"),
   savingsRate: document.querySelector("#savingsRate"),
   compareCurrent: document.querySelector("#compareCurrent"),
   compareOffer: document.querySelector("#compareOffer"),
+  expensePressure: document.querySelector("#expensePressure"),
+  expensePressureText: document.querySelector("#expensePressureText"),
+  benefitImpact: document.querySelector("#benefitImpact"),
+  benefitImpactText: document.querySelector("#benefitImpactText"),
+  breakEvenSalary: document.querySelector("#breakEvenSalary"),
+  breakEvenText: document.querySelector("#breakEvenText"),
   decisionCard: document.querySelector("#decisionCard"),
   decisionLabel: document.querySelector("#decisionLabel"),
   decisionReason: document.querySelector("#decisionReason"),
@@ -256,19 +267,27 @@ function calculate() {
   const destinationCode = selected.code;
   const currentCode = fields.currentCountry.value;
   const salary = monthlyAmount(numberValue(fields.salary), fields.salaryPeriod.value);
-  const housingCost = fields.housingProvided.checked ? 0 : numberValue(fields.housing);
-  const transportCost = fields.transportProvided.checked ? 0 : numberValue(fields.transport);
-  const familyCost = fields.schoolingProvided.checked ? Math.round(numberValue(fields.family) * 0.45) : numberValue(fields.family);
-  const otherCost = numberValue(fields.other)
-    - (fields.medicalProvided.checked ? Math.round(numberValue(fields.other) * 0.2) : 0)
-    - (fields.flightsProvided.checked ? Math.round(numberValue(fields.other) * 0.1) : 0);
+  const rawHousing = numberValue(fields.housing);
+  const rawFood = numberValue(fields.food);
+  const rawTransport = numberValue(fields.transport);
+  const rawFamily = numberValue(fields.family);
+  const rawOther = numberValue(fields.other);
+  const housingCost = fields.housingProvided.checked ? 0 : rawHousing;
+  const transportCost = fields.transportProvided.checked ? 0 : rawTransport;
+  const familyCost = fields.schoolingProvided.checked ? Math.round(rawFamily * 0.45) : rawFamily;
+  const otherCost = rawOther
+    - (fields.medicalProvided.checked ? Math.round(rawOther * 0.2) : 0)
+    - (fields.flightsProvided.checked ? Math.round(rawOther * 0.1) : 0);
   const expenses = housingCost
-    + numberValue(fields.food)
+    + rawFood
     + transportCost
     + familyCost
     + Math.max(otherCost, 0);
+  const expensesWithoutBenefits = rawHousing + rawFood + rawTransport + rawFamily + rawOther;
+  const benefitSavings = Math.max(expensesWithoutBenefits - expenses, 0);
 
   const monthlySavings = salary - expenses;
+  const monthlySavingsHome = convert(monthlySavings, destinationCode, currentCode);
   const annualSavings = convert(monthlySavings * 12, destinationCode, currentCode);
   const annualPackage = convert(salary * 12, destinationCode, currentCode);
   const currentMonthly = monthlyAmount(numberValue(fields.currentSalary), fields.currentSalaryPeriod.value);
@@ -278,18 +297,34 @@ function calculate() {
   const uplift = currentMonthlyInDestination > 0
     ? ((salary - currentMonthlyInDestination) / currentMonthlyInDestination) * 100
     : 0;
+  const breakEvenSalary = expenses / 0.65;
 
+  output.destinationExpenseLabel.textContent = `Monthly expenses in ${destinationCode}`;
+  output.destinationSavingsLabel.textContent = `Monthly savings in ${destinationCode}`;
   output.monthlySavings.textContent = formatCurrency(monthlySavings, destinationCode);
+  output.monthlySavingsHome.textContent = formatCurrency(monthlySavingsHome, currentCode);
   output.monthlyExpenses.textContent = formatCurrency(expenses, destinationCode);
   output.annualSavings.textContent = formatCurrency(annualSavings, currentCode);
-  output.annualSavingsLabel.textContent = `Annual savings in ${currentCode}`;
+  output.annualSavingsLabel.textContent = `Annual savings sent home to ${currentCode}`;
   output.annualPackage.textContent = formatCurrency(annualPackage, currentCode);
-  output.annualPackageLabel.textContent = `Equivalent annual package in ${currentCode}`;
-  output.currentMonthly.textContent = formatCurrency(currentMonthly, currentCode);
+  output.annualPackageLabel.textContent = `GCC annual package converted to ${currentCode}`;
+  output.currentMonthlyLabel.textContent = `Current monthly gross in ${currentCode}`;
+  output.offerMonthlyLabel.textContent = `GCC monthly gross converted to ${currentCode}`;
+  output.monthlySavingsHomeLabel.textContent = `Monthly savings sent home to ${currentCode}`;
   output.salaryUplift.textContent = `${Math.round(uplift)}%`;
   output.savingsRate.textContent = `${Math.round(savingsRate)}%`;
   output.compareCurrent.textContent = formatCurrency(currentMonthly, currentCode);
   output.compareOffer.textContent = formatCurrency(convert(salary, destinationCode, currentCode), currentCode);
+  output.expensePressure.textContent = `${Math.round(usage)}%`;
+  output.expensePressureText.textContent = usage > 70
+    ? "High cost pressure. Housing or schooling support matters."
+    : "Cost pressure is manageable for this salary level.";
+  output.benefitImpact.textContent = formatCurrency(benefitSavings, destinationCode);
+  output.benefitImpactText.textContent = benefitSavings > 0
+    ? "Estimated monthly cost removed by selected employer benefits."
+    : "No employer benefits selected yet.";
+  output.breakEvenSalary.textContent = formatCurrency(breakEvenSalary, destinationCode);
+  output.breakEvenText.textContent = "Approximate monthly salary needed to keep expenses near 65%.";
   output.usagePercent.textContent = `${Math.round(usage)}% expenses`;
   output.expenseBar.style.width = `${usage}%`;
   output.countryNoteTitle.textContent = `${selected.label} note`;
