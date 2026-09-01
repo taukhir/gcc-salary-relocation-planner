@@ -194,6 +194,20 @@ const fields = {
   currentOther: document.querySelector("#currentOther")
 };
 
+const inputLabels = {
+  housing: document.querySelector("#housingLabel"),
+  food: document.querySelector("#foodLabel"),
+  transport: document.querySelector("#transportLabel"),
+  family: document.querySelector("#familyLabel"),
+  other: document.querySelector("#otherLabel"),
+  currentHeading: document.querySelector("#currentExpenseHeading"),
+  currentHelp: document.querySelector("#currentExpenseHelp"),
+  currentHousing: document.querySelector("#currentHousingLabel"),
+  currentFood: document.querySelector("#currentFoodLabel"),
+  currentTransport: document.querySelector("#currentTransportLabel"),
+  currentOther: document.querySelector("#currentOtherLabel")
+};
+
 const output = {
   monthlySavings: document.querySelector("#monthlySavings"),
   monthlyExpenses: document.querySelector("#monthlyExpenses"),
@@ -254,6 +268,41 @@ function periodLabel(period) {
   return period === "annual" ? "Annual" : "Monthly";
 }
 
+function changePeriodValue(input, fromPeriod, toPeriod) {
+  const monthlyValue = monthlyAmount(numberValue(input), fromPeriod);
+  input.value = Math.round(periodAmount(monthlyValue, toPeriod));
+}
+
+function convertInputGroup(periodField, linkedFields) {
+  const nextPeriod = periodField.value;
+  const previousPeriod = periodField.dataset.previousPeriod || nextPeriod;
+  if (previousPeriod !== nextPeriod) {
+    linkedFields.forEach((input) => changePeriodValue(input, previousPeriod, nextPeriod));
+  }
+  periodField.dataset.previousPeriod = nextPeriod;
+}
+
+function updateInputLabels() {
+  const destinationPeriod = periodLabel(fields.salaryPeriod.value).toLowerCase();
+  const currentPeriod = periodLabel(fields.currentSalaryPeriod.value).toLowerCase();
+  const destinationLabels = {
+    housing: `Destination ${destinationPeriod} housing`,
+    food: `Destination ${destinationPeriod} food and groceries`,
+    transport: `Destination ${destinationPeriod} transport`,
+    family: `Destination ${destinationPeriod} family / dependents`,
+    other: `Destination ${destinationPeriod} other expenses`
+  };
+  Object.entries(destinationLabels).forEach(([key, label]) => {
+    inputLabels[key].textContent = label;
+  });
+  inputLabels.currentHeading.textContent = `Current country ${currentPeriod} expenses`;
+  inputLabels.currentHelp.textContent = `Enter ${currentPeriod} costs. Values are converted when you switch the current salary period.`;
+  inputLabels.currentHousing.textContent = `Current ${currentPeriod} housing`;
+  inputLabels.currentFood.textContent = `Current ${currentPeriod} food and groceries`;
+  inputLabels.currentTransport.textContent = `Current ${currentPeriod} transport`;
+  inputLabels.currentOther.textContent = `Current ${currentPeriod} family / other`;
+}
+
 function convert(amount, fromCode, toCode) {
   const fromRate = ratesInInr[fromCode] || fallbackRatesInInr[fromCode];
   const toRate = ratesInInr[toCode] || fallbackRatesInInr[toCode];
@@ -263,6 +312,7 @@ function convert(amount, fromCode, toCode) {
 function applyMarketDefaults() {
   const selected = marketDefaults[fields.country.value];
   fields.salaryPeriod.value = "monthly";
+  fields.salaryPeriod.dataset.previousPeriod = "monthly";
   fields.salary.value = selected.salary;
   applyFamilyDefaults();
 }
@@ -273,17 +323,20 @@ function applyCurrentExpenseDefaults() {
   fields.currentFood.value = selected.food;
   fields.currentTransport.value = selected.transport;
   fields.currentOther.value = selected.other;
+  [fields.currentHousing, fields.currentFood, fields.currentTransport, fields.currentOther]
+    .forEach((input) => changePeriodValue(input, "monthly", fields.currentSalaryPeriod.value));
   calculate();
 }
 
 function applyFamilyDefaults() {
   const selected = marketDefaults[fields.country.value];
   const profile = familyMultipliers[fields.familyProfile.value];
-  fields.housing.value = Math.round(selected.housing * profile.housing);
-  fields.food.value = Math.round(selected.food * profile.food);
-  fields.transport.value = Math.round(selected.transport * profile.transport);
-  fields.family.value = Math.round(selected.family * profile.family);
-  fields.other.value = selected.other;
+  const period = fields.salaryPeriod.value;
+  fields.housing.value = Math.round(periodAmount(selected.housing * profile.housing, period));
+  fields.food.value = Math.round(periodAmount(selected.food * profile.food, period));
+  fields.transport.value = Math.round(periodAmount(selected.transport * profile.transport, period));
+  fields.family.value = Math.round(periodAmount(selected.family * profile.family, period));
+  fields.other.value = Math.round(periodAmount(selected.other, period));
   calculate();
 }
 
@@ -338,11 +391,12 @@ function calculate() {
   const resultPeriod = fields.resultPeriod.value;
   const periodName = periodLabel(resultPeriod);
   const salary = monthlyAmount(numberValue(fields.salary), fields.salaryPeriod.value);
-  const rawHousing = numberValue(fields.housing);
-  const rawFood = numberValue(fields.food);
-  const rawTransport = numberValue(fields.transport);
-  const rawFamily = numberValue(fields.family);
-  const rawOther = numberValue(fields.other);
+  const destinationInputPeriod = fields.salaryPeriod.value;
+  const rawHousing = monthlyAmount(numberValue(fields.housing), destinationInputPeriod);
+  const rawFood = monthlyAmount(numberValue(fields.food), destinationInputPeriod);
+  const rawTransport = monthlyAmount(numberValue(fields.transport), destinationInputPeriod);
+  const rawFamily = monthlyAmount(numberValue(fields.family), destinationInputPeriod);
+  const rawOther = monthlyAmount(numberValue(fields.other), destinationInputPeriod);
   const housingCost = fields.housingProvided.checked ? 0 : rawHousing;
   const transportCost = fields.transportProvided.checked ? 0 : rawTransport;
   const familyCost = fields.schoolingProvided.checked ? Math.round(rawFamily * 0.45) : rawFamily;
@@ -359,10 +413,11 @@ function calculate() {
 
   const monthlySavings = salary - expenses;
   const currentMonthly = monthlyAmount(numberValue(fields.currentSalary), fields.currentSalaryPeriod.value);
-  const currentExpenses = numberValue(fields.currentHousing)
-    + numberValue(fields.currentFood)
-    + numberValue(fields.currentTransport)
-    + numberValue(fields.currentOther);
+  const currentExpensePeriod = fields.currentSalaryPeriod.value;
+  const currentExpenses = monthlyAmount(numberValue(fields.currentHousing), currentExpensePeriod)
+    + monthlyAmount(numberValue(fields.currentFood), currentExpensePeriod)
+    + monthlyAmount(numberValue(fields.currentTransport), currentExpensePeriod)
+    + monthlyAmount(numberValue(fields.currentOther), currentExpensePeriod);
   const currentSavings = currentMonthly - currentExpenses;
   const savingsSentHome = convert(monthlySavings, destinationCode, currentCode);
   const netImprovement = savingsSentHome - currentSavings;
@@ -397,12 +452,12 @@ function calculate() {
   output.expensePressureText.textContent = usage > 70
     ? `Destination expenses use ${Math.round(usage)}% of income; benefits matter.`
     : `Destination savings rate is ${Math.round(savingsRate)}%. Current savings rate is ${Math.round(currentSavingsRate)}%.`;
-  output.benefitImpact.textContent = formatCurrency(benefitSavings, destinationCode);
+  output.benefitImpact.textContent = formatCurrency(periodAmount(benefitSavings, resultPeriod), destinationCode);
   output.benefitImpactText.textContent = benefitSavings > 0
-    ? "Estimated monthly cost removed by selected employer benefits."
+    ? `Estimated ${periodName.toLowerCase()} cost removed by selected employer benefits.`
     : "No employer benefits selected yet.";
-  output.breakEvenSalary.textContent = formatCurrency(breakEvenSalary, destinationCode);
-  output.breakEvenText.textContent = "Approximate monthly salary needed to keep expenses near 65%.";
+  output.breakEvenSalary.textContent = formatCurrency(periodAmount(breakEvenSalary, resultPeriod), destinationCode);
+  output.breakEvenText.textContent = `Approximate ${periodName.toLowerCase()} salary needed to keep expenses near 65%.`;
   output.usagePercent.textContent = `${Math.round(usage)}% expenses`;
   output.expenseBar.style.width = `${usage}%`;
   output.countryNoteTitle.textContent = `${selected.label} note`;
@@ -431,9 +486,31 @@ function calculate() {
 fields.country.addEventListener("change", applyMarketDefaults);
 fields.familyProfile.addEventListener("change", applyFamilyDefaults);
 fields.currentCountry.addEventListener("change", applyCurrentExpenseDefaults);
+fields.salaryPeriod.addEventListener("change", () => {
+  convertInputGroup(fields.salaryPeriod, [
+    fields.salary,
+    fields.housing,
+    fields.food,
+    fields.transport,
+    fields.family,
+    fields.other
+  ]);
+  updateInputLabels();
+  calculate();
+});
+fields.currentSalaryPeriod.addEventListener("change", () => {
+  convertInputGroup(fields.currentSalaryPeriod, [
+    fields.currentSalary,
+    fields.currentHousing,
+    fields.currentFood,
+    fields.currentTransport,
+    fields.currentOther
+  ]);
+  updateInputLabels();
+  calculate();
+});
 
 [
-  fields.salaryPeriod,
   fields.resultPeriod,
   fields.salary,
   fields.housing,
@@ -446,7 +523,6 @@ fields.currentCountry.addEventListener("change", applyCurrentExpenseDefaults);
   fields.flightsProvided,
   fields.transportProvided,
   fields.schoolingProvided,
-  fields.currentSalaryPeriod,
   fields.currentSalary,
   fields.currentHousing,
   fields.currentFood,
@@ -459,4 +535,7 @@ fields.currentCountry.addEventListener("change", applyCurrentExpenseDefaults);
 
 applyMarketDefaults();
 applyCurrentExpenseDefaults();
+fields.salaryPeriod.dataset.previousPeriod = fields.salaryPeriod.value;
+fields.currentSalaryPeriod.dataset.previousPeriod = fields.currentSalaryPeriod.value;
+updateInputLabels();
 loadExchangeRates();
