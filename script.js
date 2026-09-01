@@ -225,6 +225,12 @@ const output = {
   homeSavings: document.querySelector("#homeSavings"),
   destinationTax: document.querySelector("#destinationTax"),
   homeTax: document.querySelector("#homeTax"),
+  destinationNetIncome: document.querySelector("#destinationNetIncome"),
+  homeNetIncome: document.querySelector("#homeNetIncome"),
+  destinationExpenseBurden: document.querySelector("#destinationExpenseBurden"),
+  homeExpenseBurden: document.querySelector("#homeExpenseBurden"),
+  destinationHousingBurden: document.querySelector("#destinationHousingBurden"),
+  homeHousingBurden: document.querySelector("#homeHousingBurden"),
   destinationSavingsRate: document.querySelector("#destinationSavingsRate"),
   homeSavingsRate: document.querySelector("#homeSavingsRate"),
   betterCountry: document.querySelector("#betterCountry"),
@@ -313,7 +319,7 @@ function updateInputLabels() {
     inputLabels[key].textContent = label;
   });
   inputLabels.currentHeading.textContent = `${currentLabel} ${currentPeriod} expenses`;
-  inputLabels.currentHelp.textContent = `Enter ${currentPeriod} costs. Values are converted when you switch the current salary period.`;
+  inputLabels.currentHelp.textContent = `Enter ${currentPeriod} costs. Both countries follow the shared calculation period.`;
   inputLabels.currentHousing.textContent = `${currentLabel} ${currentPeriod} housing`;
   inputLabels.currentFood.textContent = `${currentLabel} ${currentPeriod} food and groceries`;
   inputLabels.currentTransport.textContent = `${currentLabel} ${currentPeriod} transport`;
@@ -446,12 +452,16 @@ function calculate() {
     + monthlyAmount(numberValue(fields.currentTransport), currentExpensePeriod)
     + monthlyAmount(numberValue(fields.currentOther), currentExpensePeriod);
   const currentSavings = currentNetSalary - currentExpenses;
+  const currentHousing = monthlyAmount(numberValue(fields.currentHousing), currentExpensePeriod);
   const savingsSentHome = convert(monthlySavings, destinationCode, currentCode);
   const netImprovement = savingsSentHome - currentSavings;
   const currentMonthlyInDestination = convert(currentMonthly, currentCode, destinationCode);
   const usage = destinationNetSalary > 0 ? Math.min((expenses / destinationNetSalary) * 100, 100) : 0;
   const savingsRate = destinationNetSalary > 0 ? (monthlySavings / destinationNetSalary) * 100 : 0;
   const currentSavingsRate = currentNetSalary > 0 ? (currentSavings / currentNetSalary) * 100 : 0;
+  const currentExpenseBurden = currentNetSalary > 0 ? (currentExpenses / currentNetSalary) * 100 : 0;
+  const destinationHousingBurden = destinationNetSalary > 0 ? (rawHousing / destinationNetSalary) * 100 : 0;
+  const currentHousingBurden = currentNetSalary > 0 ? (currentHousing / currentNetSalary) * 100 : 0;
   const uplift = currentMonthlyInDestination > 0
     ? ((salary - currentMonthlyInDestination) / currentMonthlyInDestination) * 100
     : 0;
@@ -478,6 +488,12 @@ function calculate() {
   output.homeSavings.textContent = formatCurrency(periodAmount(currentSavings, resultPeriod), currentCode);
   output.destinationTax.textContent = formatCurrency(periodAmount(destinationTax, resultPeriod), destinationCode);
   output.homeTax.textContent = formatCurrency(periodAmount(currentTax, resultPeriod), currentCode);
+  output.destinationNetIncome.textContent = formatCurrency(periodAmount(destinationNetSalary, resultPeriod), destinationCode);
+  output.homeNetIncome.textContent = formatCurrency(periodAmount(currentNetSalary, resultPeriod), currentCode);
+  output.destinationExpenseBurden.textContent = `${Math.round(usage)}%`;
+  output.homeExpenseBurden.textContent = `${Math.round(currentExpenseBurden)}%`;
+  output.destinationHousingBurden.textContent = `${Math.round(destinationHousingBurden)}%`;
+  output.homeHousingBurden.textContent = `${Math.round(currentHousingBurden)}%`;
   output.destinationSavingsRate.textContent = `${Math.round(savingsRate)}%`;
   output.homeSavingsRate.textContent = `${Math.round(currentSavingsRate)}%`;
   output.betterCountry.textContent = betterCountry;
